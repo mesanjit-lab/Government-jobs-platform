@@ -1,67 +1,33 @@
 const results = [
-  {
-    id: 1,
-    title: "SSC CGL Result 2024",
-    organization: "Staff Selection Commission",
-    resultDate: "15 Oct 2024",
-    status: "Out",
-  },
-  {
-    id: 2,
-    title: "UPSC Civil Services Result 2024",
-    organization: "Union Public Service Commission",
-    resultDate: "20 Sep 2024",
-    status: "Out",
-  },
-  {
-    id: 3,
-    title: "Railway RRB NTPC Result 2024",
-    organization: "Railway Recruitment Board",
-    resultDate: "Awaited",
-    status: "Awaited",
-  },
-  {
-    id: 4,
-    title: "Bihar Police Constable Result 2024",
-    organization: "Bihar Police",
-    resultDate: "Awaited",
-    status: "Awaited",
-  },
+  { id: 1, title: "SSC CGL 2023 Final Result", declaredOn: "07 May 2024", status: "New" },
+  { id: 2, title: "Bihar Police Constable Result 2023", declaredOn: "05 May 2024", status: "New" },
+  { id: 3, title: "Railway NTPC CBT 2 Result", declaredOn: "03 May 2024", status: "New" },
+  { id: 4, title: "UPPCL JE Result 2023", declaredOn: "01 May 2024", status: "Updated" },
+  { id: 5, title: "SSC MTS 2023 Result", declaredOn: "30 Apr 2024", status: "Updated" },
 ]
 
 export default function LatestResults() {
   return (
-    <section className="max-w-5xl mx-auto px-4 py-8">
-      {/* Section header */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-gray-800">📊 Latest Results</h2>
-        <a href="/results" className="text-sm text-blue-700 font-medium hover:underline">
-          View All Results →
-        </a>
+    <div className="bg-white rounded-xl shadow p-3">
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="text-sm font-bold text-gray-800">📊 Latest Results</h2>
+        <a href="/results" className="text-xs text-blue-600 hover:underline">View All</a>
       </div>
-
-      {/* Result cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="space-y-1.5">
         {results.map((result) => (
-          <div key={result.id} className="bg-white rounded-lg shadow p-4 border-l-4 border-green-500 hover:shadow-md transition">
-            <div className="flex justify-between items-start mb-2">
-              <h3 className="font-bold text-gray-800 text-sm">{result.title}</h3>
-              <span className={`text-xs px-2 py-0.5 rounded-full ${
-                result.status === "Out"
-                  ? "bg-green-100 text-green-700"
-                  : "bg-yellow-100 text-yellow-700"
-              }`}>
-                {result.status}
-              </span>
+          <a href={"/results/" + result.id} key={result.id} className="flex items-center justify-between border border-gray-100 rounded-lg px-2 py-1.5 hover:bg-green-50 transition">
+            <div className="flex-1 min-w-0">
+              <span className="text-xs font-semibold text-gray-800 truncate block">{result.title}</span>
+              <span className="text-xs text-gray-400">Declared: {result.declaredOn}</span>
             </div>
-            <p className="text-xs text-gray-500 mb-2">{result.organization}</p>
-            <p className="text-xs text-gray-600 mb-3">📅 Result Date: <strong>{result.resultDate}</strong></p>
-            <a href={`/results/${result.id}`} className="block text-center bg-green-600 text-white text-xs py-1.5 rounded hover:bg-green-500">
-              View Result
-            </a>
-          </div>
+            <span className={`text-xs px-1.5 py-0.5 rounded-full ml-2 font-medium whitespace-nowrap ${
+              result.status === "New" ? "bg-green-100 text-green-700" :
+              "bg-blue-100 text-blue-700"
+            }`}>{result.status}</span>
+          </a>
         ))}
       </div>
-    </section>
+      <a href="/results" className="block text-center text-xs text-blue-600 mt-2 hover:underline">View All Results →</a>
+    </div>
   )
 }
