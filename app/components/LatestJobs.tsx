@@ -13,27 +13,30 @@ export default function LatestJobs() {
         <h2 className="text-sm font-bold text-gray-800">🔥 Latest Jobs</h2>
         <a href="/jobs" className="text-xs text-blue-600 hover:underline">View All</a>
       </div>
-      <div className="space-y-1.5">
+
+      {/* Job rows */}
+      <div className="space-y-1">
         {jobs.map((job) => (
-          <a href={"/jobs/" + job.id} key={job.id} className="block border border-gray-100 rounded-lg px-2 py-1.5 hover:bg-blue-50 transition">
-            <div className="flex justify-between items-start">
-              <span className="text-xs font-semibold text-blue-700">{job.title}</span>
-              <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium whitespace-nowrap ml-1 ${
+          <a href={"/jobs/" + job.id} key={job.id} className="grid grid-cols-12 items-center text-xs py-2 px-1 border-b border-gray-50 hover:bg-blue-50 rounded transition">
+            <div className="col-span-4">
+              <div className="font-semibold text-blue-800 leading-tight">{job.title}</div>
+              <div className="text-gray-600 text-xs font-medium">{job.organization}</div>
+            </div>
+            <span className="col-span-2 text-center text-gray-700 font-medium">{job.vacancies}</span>
+            <span className="col-span-2 text-center text-gray-600">{job.qualification}</span>
+            <span className="col-span-2 text-center text-gray-600">{job.lastDate}</span>
+            <div className="col-span-2 text-center">
+              <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${
                 job.status === "New" ? "bg-green-100 text-green-700" :
                 job.status === "Hot" ? "bg-orange-100 text-orange-700" :
                 "bg-blue-100 text-blue-700"
               }`}>{job.status}</span>
             </div>
-            <p className="text-xs text-gray-400">{job.organization}</p>
-            <div className="flex gap-3 mt-1 text-xs">
-              <span className="text-gray-600">👥 <strong>{job.vacancies}</strong> Vacancies</span>
-              <span className="text-gray-600">🎓 <strong>{job.qualification}</strong></span>
-              <span className="text-red-500">📅 <strong>{job.lastDate}</strong></span>
-            </div>
           </a>
         ))}
       </div>
-      <a href="/jobs" className="block text-center text-xs text-blue-600 mt-2 hover:underline">View All Jobs →</a>
+
+      <a href="/jobs" className="block text-center text-xs text-blue-600 mt-2 hover:underline">View All Latest Jobs →</a>
     </div>
   )
 }

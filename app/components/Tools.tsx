@@ -17,8 +17,8 @@ export default function Tools() {
           {tools.map((tool) => (
             <a key={tool.title} href={tool.href} className="flex flex-col items-center text-center p-3 rounded-lg hover:bg-blue-50 transition">
               <span className="text-2xl mb-1">{tool.icon}</span>
-              <span className="text-xs font-semibold text-gray-700">{tool.title}</span>
-              <span className="text-xs text-gray-400">{tool.subtitle}</span>
+              <span className="text-xs font-semibold text-gray-800">{tool.title}</span>
+              <span className="text-xs text-gray-500">{tool.subtitle}</span>
             </a>
           ))}
         </div>

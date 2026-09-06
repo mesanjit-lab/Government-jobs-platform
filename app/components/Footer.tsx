@@ -1,11 +1,11 @@
 export default function Footer() {
   return (
-    <footer className="bg-blue-900 text-white mt-10">
+    <footer className="bg-blue-800 text-white mt-10">
       <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
         
         {/* About */}
         <div>
-          <h3 className="font-bold text-yellow-400 mb-3">MyResult</h3>
+          <h3 className="font-bold text-blue-200 mb-3">MyResult</h3>
           <p className="text-gray-300 text-xs">
             Fast, reliable and student-focused government job platform.
           </p>

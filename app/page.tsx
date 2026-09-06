@@ -16,9 +16,9 @@ export default function Home() {
 
       {/* 3 Column Section */}
       <section className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <LatestJobs />
-        <LatestAdmitCards />
         <LatestResults />
+        <LatestAdmitCards />
+        <LatestJobs />
       </section>
 
       <BottomSections />
