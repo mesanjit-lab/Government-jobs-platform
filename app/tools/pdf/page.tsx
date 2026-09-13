@@ -35,8 +35,8 @@ const faqs = [
 
 async function createBlob(doc: PDFDocument): Promise<Blob> {
   const bytes = await doc.save()
-  const buffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer
-  return new Blob([buffer], { type: 'application/pdf' })
+  const uint8 = new Uint8Array(bytes)
+  return new Blob([uint8.buffer], { type: 'application/pdf' })
 }
 
 export default function PdfToolsPage() {
@@ -169,9 +169,9 @@ export default function PdfToolsPage() {
     try {
       const pdf = await PDFDocument.load(await files[0].arrayBuffer())
       const useStreams = compression !== 'recommended'
-      const bytes = await pdf.save({ useObjectStreams: useStreams })
-      const buffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer
-      const blob = new Blob([buffer], { type: 'application/pdf' })
+      const savedBytes = await pdf.save({ useObjectStreams: useStreams })
+      const uint8 = new Uint8Array(savedBytes)
+      const blob = new Blob([uint8.buffer], { type: 'application/pdf' })
       const url = URL.createObjectURL(blob)
       const origKB = files[0].size / 1024
       const finalKB = blob.size / 1024
@@ -246,7 +246,6 @@ export default function PdfToolsPage() {
   return (
     <main className="min-h-screen bg-gray-50">
       <Header />
-
       <div className="bg-blue-900 text-white py-4 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-1 text-xs text-blue-200 mb-2">
@@ -262,8 +261,6 @@ export default function PdfToolsPage() {
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
-
-        {/* Tool Selector */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
           <h2 className="text-sm font-bold text-blue-900 mb-3">Select PDF Tool</h2>
           <div className="grid grid-cols-2 gap-2">
@@ -278,7 +275,6 @@ export default function PdfToolsPage() {
           </div>
         </div>
 
-        {/* Use Case */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
           <h2 className="text-sm font-bold text-blue-900 mb-2">What are you using this PDF for?</h2>
           <select value={useCase} onChange={(e) => setUseCase(e.target.value)}
@@ -288,7 +284,6 @@ export default function PdfToolsPage() {
           <p className="text-xs text-gray-400 mt-1">Always check the official notification for exact PDF requirements.</p>
         </div>
 
-        {/* Upload */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
           <h2 className="text-sm font-bold text-blue-900 mb-3">Upload Files</h2>
           <div
@@ -308,15 +303,12 @@ export default function PdfToolsPage() {
             onChange={(e) => { if (e.target.files) handleFiles(e.target.files) }} />
         </div>
 
-        {/* File List */}
         {files.length > 0 && (
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
             <div className="flex justify-between items-center mb-3">
               <h2 className="text-sm font-bold text-blue-900">Uploaded Files ({files.length})</h2>
               <button onClick={() => fileInputRef.current?.click()}
-                className="text-xs text-blue-600 border border-blue-200 px-3 py-1 rounded-lg hover:bg-blue-50">
-                + Add More
-              </button>
+                className="text-xs text-blue-600 border border-blue-200 px-3 py-1 rounded-lg hover:bg-blue-50">+ Add More</button>
             </div>
             <div className="space-y-2">
               {files.map((f, i) => (
@@ -343,11 +335,9 @@ export default function PdfToolsPage() {
           </div>
         )}
 
-        {/* Settings */}
         {files.length > 0 && (
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-3">
             <h2 className="text-sm font-bold text-blue-900">Settings</h2>
-
             {activeTool === 'jpg-to-pdf' && (
               <>
                 <div>
@@ -355,7 +345,7 @@ export default function PdfToolsPage() {
                   <div className="flex flex-wrap gap-2">
                     {Object.keys(pageSizes).map((s) => (
                       <button key={s} onClick={() => setPageSize(s)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 transition ${pageSize === s ? 'bg-blue-700 text-white border-blue-700' : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300'}`}>
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 transition ${pageSize === s ? 'bg-blue-700 text-white border-blue-700' : 'bg-white text-gray-600 border-gray-200'}`}>
                         {s}
                       </button>
                     ))}
@@ -404,7 +394,6 @@ export default function PdfToolsPage() {
                 </div>
               </>
             )}
-
             {activeTool === 'compress-pdf' && (
               <div>
                 <label className="block text-xs font-semibold text-gray-600 mb-2">Compression Level</label>
@@ -419,7 +408,6 @@ export default function PdfToolsPage() {
                 {compression === 'strong' && <p className="text-xs text-yellow-600 mt-1">⚠️ Strong compression may reduce quality.</p>}
               </div>
             )}
-
             {activeTool === 'split-pdf' && (
               <div>
                 <label className="block text-xs font-semibold text-gray-600 mb-1">Page Range</label>
@@ -432,7 +420,6 @@ export default function PdfToolsPage() {
           </div>
         )}
 
-        {/* Process Button */}
         {files.length > 0 && (
           <button onClick={handleProcess} disabled={processing}
             className="w-full bg-blue-700 text-white py-3.5 rounded-xl text-sm font-bold hover:bg-blue-600 disabled:opacity-60 flex items-center justify-center gap-2">
@@ -440,7 +427,6 @@ export default function PdfToolsPage() {
           </button>
         )}
 
-        {/* Status */}
         {status && (
           <div className={`rounded-xl border p-4 ${status.error ? 'bg-red-50 border-red-100' : 'bg-green-50 border-green-100'}`}>
             {status.error ? (
@@ -457,7 +443,6 @@ export default function PdfToolsPage() {
           </div>
         )}
 
-        {/* Result */}
         {resultUrl && resultInfo && (
           <div className="bg-white rounded-xl shadow-sm border border-green-100 p-5">
             <div className="text-center mb-4">
@@ -503,13 +488,11 @@ export default function PdfToolsPage() {
           </div>
         )}
 
-        {/* Privacy */}
         <div className="bg-blue-50 rounded-xl border border-blue-100 p-3 flex items-start gap-2">
           <CheckCircle2 className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-blue-700">Your files are processed securely in your browser. Files are not uploaded to any server.</p>
         </div>
 
-        {/* Useful For */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
           <h2 className="text-sm font-bold text-blue-900 mb-2">Useful for Government Job Applications</h2>
           <div className="flex flex-wrap gap-2">
@@ -519,7 +502,6 @@ export default function PdfToolsPage() {
           </div>
         </div>
 
-        {/* FAQ */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
           <h2 className="text-sm font-bold text-blue-900 mb-3">FAQ</h2>
           <div className="space-y-2">
@@ -535,7 +517,6 @@ export default function PdfToolsPage() {
           </div>
         </div>
 
-        {/* Disclaimer */}
         <div className="bg-yellow-50 rounded-xl border border-yellow-100 p-4">
           <p className="text-xs text-yellow-700"><strong>Disclaimer:</strong> MyResult provides PDF tools for general document preparation. Users should always check the concerned examination or recruitment authority's official notification for exact requirements.</p>
         </div>
