@@ -6,7 +6,7 @@ export default function Hero() {
         {/* Left side */}
         <div>
           <h1 className="text-3xl font-bold text-gray-800 leading-tight">
-            Find Your Perfect<br />
+            Find Your Dream<br />
             <span className="text-blue-800">Government Job</span>
           </h1>
           <p className="text-sm text-gray-800 mt-3">
