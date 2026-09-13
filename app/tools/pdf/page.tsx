@@ -34,8 +34,9 @@ const faqs = [
 ]
 
 async function createBlob(doc: PDFDocument): Promise<Blob> {
-  const bytes: Uint8Array = await doc.save()
-  return new Blob([bytes], { type: 'application/pdf' })
+  const bytes = await doc.save()
+  const buffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer
+  return new Blob([buffer], { type: 'application/pdf' })
 }
 
 export default function PdfToolsPage() {
@@ -168,8 +169,9 @@ export default function PdfToolsPage() {
     try {
       const pdf = await PDFDocument.load(await files[0].arrayBuffer())
       const useStreams = compression !== 'recommended'
-      const bytes: Uint8Array = await pdf.save({ useObjectStreams: useStreams })
-      const blob = new Blob([bytes], { type: 'application/pdf' })
+      const bytes = await pdf.save({ useObjectStreams: useStreams })
+      const buffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer
+      const blob = new Blob([buffer], { type: 'application/pdf' })
       const url = URL.createObjectURL(blob)
       const origKB = files[0].size / 1024
       const finalKB = blob.size / 1024
