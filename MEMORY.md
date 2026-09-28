@@ -6,7 +6,7 @@ Last updated: September 2026
 
 ## Last Completed Task
 
-Route Integrity Task 3B: gate unsupported job-detail links
+Route Integrity Task 3C: remove unsupported Results and Admit Card record links
 
 ## Last Agent
 
@@ -37,6 +37,7 @@ Codex
 - MobileHome and Eligibility Checker still use legacy local recruitment data and are the next migration candidates
 - RRB NTPC legacy eligibility data is temporarily excluded because no canonical recruitment fixture exists
 - Remaining route-integrity issues: Results, Admit Cards, Alerts, Syllabus, and placeholder hrefs
+- Results and Admit Card detail routes are intentionally deferred pending approved data/product behavior; remaining issues are Alerts, Syllabus, and placeholder hrefs
 
 ## Current Work
 

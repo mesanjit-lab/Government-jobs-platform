@@ -71,7 +71,7 @@ export default function AdmitCardPage() {
 
             <div className="space-y-3">
               {admitCards.map((card) => (
-                <a href={"/admit-card/" + card.id} key={card.id} className="block border border-gray-100 rounded-lg p-3 hover:bg-purple-50 transition">
+                <div key={card.id} className="block border border-gray-100 rounded-lg p-3 hover:bg-purple-50 transition">
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="text-sm font-bold text-blue-900">{card.title}</h3>
@@ -87,7 +87,7 @@ export default function AdmitCardPage() {
                     <span className="text-blue-600">📅 Exam Date: <strong>{card.examDate}</strong></span>
                     <span className="text-purple-600">🗓️ Release Date: <strong>{card.releaseDate}</strong></span>
                   </div>
-                </a>
+                </div>
               ))}
             </div>
           </div>

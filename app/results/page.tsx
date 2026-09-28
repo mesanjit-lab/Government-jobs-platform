@@ -71,7 +71,7 @@ export default function ResultsPage() {
 
             <div className="space-y-3">
               {results.map((result) => (
-                <a href={"/results/" + result.id} key={result.id} className="block border border-gray-100 rounded-lg p-3 hover:bg-green-50 transition">
+                <div key={result.id} className="block border border-gray-100 rounded-lg p-3 hover:bg-green-50 transition">
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="text-sm font-bold text-blue-900">{result.title}</h3>
@@ -86,7 +86,7 @@ export default function ResultsPage() {
                     <span>🏷️ {result.category}</span>
                     <span className="text-green-600">📅 Declared: <strong>{result.declaredOn}</strong></span>
                   </div>
-                </a>
+                </div>
               ))}
             </div>
           </div>

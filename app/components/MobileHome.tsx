@@ -222,11 +222,11 @@ export default function MobileHome() {
             </div>
             <div className="divide-y divide-gray-50">
               {latestResults.map((r) => (
-                <a href={"/results/" + r.id} key={r.id} className="block px-3 py-2 hover:bg-green-50 transition">
+                <div key={r.id} className="block px-3 py-2 hover:bg-green-50 transition">
                   <p className="text-xs font-semibold text-blue-900 leading-tight line-clamp-2">{r.title}</p>
                   <p className="text-xs text-gray-400 mt-0.5 truncate">{r.date}</p>
                   <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full font-semibold mt-1 inline-block">{r.badge}</span>
-                </a>
+                </div>
               ))}
             </div>
             <div className="px-3 py-2 border-t border-gray-50">
@@ -242,11 +242,11 @@ export default function MobileHome() {
             </div>
             <div className="divide-y divide-gray-50">
               {latestAdmitCards.map((c) => (
-                <a href={"/admit-card/" + c.id} key={c.id} className="block px-3 py-2 hover:bg-purple-50 transition">
+                <div key={c.id} className="block px-3 py-2 hover:bg-purple-50 transition">
                   <p className="text-xs font-semibold text-blue-900 leading-tight line-clamp-2">{c.title}</p>
                   <p className="text-xs text-gray-400 mt-0.5 truncate">{c.examDate}</p>
                   <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full font-semibold mt-1 inline-block">{c.status}</span>
-                </a>
+                </div>
               ))}
             </div>
             <div className="px-3 py-2 border-t border-gray-50">
