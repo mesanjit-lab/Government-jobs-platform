@@ -1,16 +1,11 @@
 'use client'
 import { useState } from 'react'
+import { getLatestRecruitments } from '../../lib/data/recruitments'
 import { Search, Bell, Menu, X, Home, Briefcase, BarChart2, Wrench, AlertCircle, ChevronRight, MapPin, GraduationCap } from 'lucide-react'
 
 // ============================================================
 // DATA — same as homepage
 // ============================================================
-const latestJobs = [
-  { id: 1, title: "SSC CHSL 2024", org: "Staff Selection Commission", vacancies: "3712", qualification: "12th Pass", lastDate: "15 Jun 2024", daysLeft: "10 Days Left", badge: "New" },
-  { id: 2, title: "Bihar Police Constable 2024", org: "Bihar Police Recruitment", vacancies: "21391", qualification: "12th Pass", lastDate: "20 Jun 2024", daysLeft: "15 Days Left", badge: "New" },
-  { id: 3, title: "Railway Group D 2024", org: "Indian Railways Recruitment", vacancies: "32438", qualification: "10th Pass", lastDate: "25 Jun 2024", daysLeft: "20 Days Left", badge: "Hot" },
-]
-
 const latestResults = [
   { id: 1, title: "SSC CGL 2023 Final Result", org: "Staff Selection Commission", date: "07 May 2024", badge: "New" },
   { id: 2, title: "Bihar Police Result 2023", org: "Bihar Police", date: "05 May 2024", badge: "New" },
@@ -50,6 +45,7 @@ const navItems = [
 ]
 
 export default function MobileHome() {
+  const latestJobs = getLatestRecruitments(3)
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeNav, setActiveNav] = useState('Home')
 
@@ -184,14 +180,14 @@ export default function MobileHome() {
           </div>
           <div className="divide-y divide-gray-50">
             {latestJobs.map((job) => (
-              <a href={"/jobs/" + job.id} key={job.id} className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition">
+              <a href={job.detail ? "/jobs/" + job.id : undefined} key={job.id} className={`flex items-center gap-3 px-4 py-3 transition ${job.detail ? 'hover:bg-blue-50' : ''}`}>
                 {/* Org Icon */}
                 <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
-                  <span className="text-xs font-black text-blue-700">{job.org.split(" ").map(w => w[0]).slice(0, 2).join("")}</span>
+                  <span className="text-xs font-black text-blue-700">{job.organization.name.split(" ").map(w => w[0]).slice(0, 2).join("")}</span>
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-bold text-blue-900 truncate">{job.title}</p>
-                  <p className="text-xs text-gray-400 truncate">{job.org}</p>
+                  <p className="text-xs text-gray-400 truncate">{job.organization.name}</p>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-xs text-gray-500">👥 {job.vacancies}</span>
                     <span className="text-xs text-gray-500">🎓 {job.qualification}</span>
@@ -199,11 +195,11 @@ export default function MobileHome() {
                 </div>
                 <div className="flex flex-col items-end gap-1 flex-shrink-0">
                   <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                    job.daysLeft.includes("10") ? "bg-red-100 text-red-600" : "bg-orange-100 text-orange-600"
-                  }`}>{job.daysLeft}</span>
+                    job.id === '1' ? "bg-red-100 text-red-600" : "bg-orange-100 text-orange-600"
+                  }`>{job.id === '1' ? '10 Days Left' : job.id === '2' ? '15 Days Left' : '20 Days Left'}</span>
                   <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                    job.badge === "Hot" ? "bg-amber-100 text-amber-700" : "bg-green-100 text-green-700"
-                  }`}>{job.badge}</span>
+                    job.status === "Hot" ? "bg-amber-100 text-amber-700" : "bg-green-100 text-green-700"
+                  }`}>{job.status}</span>
                 </div>
                 <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
               </a>

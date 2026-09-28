@@ -3,65 +3,7 @@ import { useState } from 'react'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import { ChevronRight, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react'
-
-const jobs = [
-  {
-    id: 1, title: "SSC CGL 2024", organization: "Staff Selection Commission",
-    minAge: 18, maxAge: 32, qualification: "graduate",
-    category: "central", state: "all",
-    fee: { general: 100, obc: 100, sc: 0, st: 0, female: 0 },
-    vacancies: 17727, lastDate: "10 Jul 2024"
-  },
-  {
-    id: 2, title: "SSC CHSL 2024", organization: "Staff Selection Commission",
-    minAge: 18, maxAge: 27, qualification: "12th",
-    category: "central", state: "all",
-    fee: { general: 100, obc: 100, sc: 0, st: 0, female: 0 },
-    vacancies: 3712, lastDate: "15 Jun 2024"
-  },
-  {
-    id: 3, title: "Bihar Police Constable 2024", organization: "Bihar Police",
-    minAge: 18, maxAge: 25, qualification: "12th",
-    category: "state", state: "bihar",
-    fee: { general: 200, obc: 200, sc: 50, st: 50, female: 0 },
-    vacancies: 21391, lastDate: "20 Jun 2024"
-  },
-  {
-    id: 4, title: "Railway Group D 2024", organization: "Indian Railways",
-    minAge: 18, maxAge: 33, qualification: "10th",
-    category: "railway", state: "all",
-    fee: { general: 500, obc: 500, sc: 250, st: 250, female: 250 },
-    vacancies: 32438, lastDate: "25 Jun 2024"
-  },
-  {
-    id: 5, title: "UPSC Civil Services 2024", organization: "UPSC",
-    minAge: 21, maxAge: 32, qualification: "graduate",
-    category: "central", state: "all",
-    fee: { general: 100, obc: 100, sc: 0, st: 0, female: 0 },
-    vacancies: 1056, lastDate: "20 Feb 2024"
-  },
-  {
-    id: 6, title: "BPSC 70th 2024", organization: "BPSC",
-    minAge: 20, maxAge: 37, qualification: "graduate",
-    category: "state", state: "bihar",
-    fee: { general: 600, obc: 600, sc: 150, st: 150, female: 150 },
-    vacancies: 2100, lastDate: "25 Jul 2024"
-  },
-  {
-    id: 7, title: "RRB NTPC 2024", organization: "Railway Recruitment Board",
-    minAge: 18, maxAge: 33, qualification: "12th",
-    category: "railway", state: "all",
-    fee: { general: 500, obc: 500, sc: 250, st: 250, female: 250 },
-    vacancies: 11558, lastDate: "30 Jul 2024"
-  },
-  {
-    id: 8, title: "UPSSSC PET 2024", organization: "UPSSSC",
-    minAge: 18, maxAge: 40, qualification: "12th",
-    category: "state", state: "up",
-    fee: { general: 185, obc: 185, sc: 95, st: 95, female: 95 },
-    vacancies: 50000, lastDate: "30 Jun 2024"
-  },
-]
+import { getRecruitmentsForEligibility } from '../../../lib/data/recruitments'
 
 const qualificationLevels: Record<string, number> = {
   "8th": 1, "10th": 2, "12th": 3, "iti": 3, "diploma": 4,
@@ -71,6 +13,7 @@ const qualificationLevels: Record<string, number> = {
 }
 
 export default function EligibilityCheckerPage() {
+  const jobs = getRecruitmentsForEligibility()
   const [age, setAge] = useState('')
   const [qualification, setQualification] = useState('')
   const [category, setCategory] = useState('')

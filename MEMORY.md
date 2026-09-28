@@ -6,7 +6,7 @@ Last updated: September 2026
 
 ## Last Completed Task
 
-Backend-readiness Cleanup Task 1: shared typed recruitment domain foundation
+Backend-readiness Cleanup Task 2: migrate mobile and eligibility recruitment consumers
 
 ## Last Agent
 
@@ -35,6 +35,7 @@ Codex
 - No real notification system exists
 - Several existing UI controls and links remain non-functional, including filters and missing detail/alerts routes
 - MobileHome and Eligibility Checker still use legacy local recruitment data and are the next migration candidates
+- RRB NTPC legacy eligibility data is temporarily excluded because no canonical recruitment fixture exists
 
 ## Current Work
 

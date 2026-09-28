@@ -22,6 +22,21 @@ export function getRecruitments(): readonly Recruitment[] { return recruitments 
 export function getRecruitmentById(id: string): Recruitment | undefined { return recruitments.find((recruitment) => recruitment.id === id) }
 export function getLatestRecruitments(limit = 5): readonly Recruitment[] { return recruitments.slice(0, limit) }
 
+export interface EligibilityFee { general: number; obc: number; sc: number; st: number; female: number }
+export interface EligibilityRuleFixture { recruitmentId: string; minAge: number; maxAge: number; qualification: string; category: string; state: string; fee: EligibilityFee }
+export interface EligibilityRecruitment extends EligibilityRuleFixture { id: string; title: string; organization: string; vacancies: string; lastDate: string }
+// MOCK DATA — eligibility-specific rules for canonical recruitments only.
+const eligibilityRules: readonly EligibilityRuleFixture[] = [
+  { recruitmentId: '5', minAge: 18, maxAge: 32, qualification: 'graduate', category: 'central', state: 'all', fee: { general: 100, obc: 100, sc: 0, st: 0, female: 0 } },
+  { recruitmentId: '1', minAge: 18, maxAge: 27, qualification: '12th', category: 'central', state: 'all', fee: { general: 100, obc: 100, sc: 0, st: 0, female: 0 } },
+  { recruitmentId: '2', minAge: 18, maxAge: 25, qualification: '12th', category: 'state', state: 'bihar', fee: { general: 200, obc: 200, sc: 50, st: 50, female: 0 } },
+  { recruitmentId: '3', minAge: 18, maxAge: 33, qualification: '10th', category: 'railway', state: 'all', fee: { general: 500, obc: 500, sc: 250, st: 250, female: 250 } },
+  { recruitmentId: '6', minAge: 21, maxAge: 32, qualification: 'graduate', category: 'central', state: 'all', fee: { general: 100, obc: 100, sc: 0, st: 0, female: 0 } },
+  { recruitmentId: '7', minAge: 20, maxAge: 37, qualification: 'graduate', category: 'state', state: 'bihar', fee: { general: 600, obc: 600, sc: 150, st: 150, female: 150 } },
+  { recruitmentId: '4', minAge: 18, maxAge: 40, qualification: '12th', category: 'state', state: 'up', fee: { general: 185, obc: 185, sc: 95, st: 95, female: 95 } },
+] as const
+export function getRecruitmentsForEligibility(): readonly EligibilityRecruitment[] { return eligibilityRules.map((rule) => { const recruitment = getRecruitmentById(rule.recruitmentId); if (!recruitment) throw new Error(`Missing recruitment fixture: ${rule.recruitmentId}`); return { id: recruitment.id, title: recruitment.title, organization: recruitment.organization.name, vacancies: recruitment.vacancies, lastDate: recruitment.lastDate, ...rule } }) }
+
 export interface RecruitmentDetailView {
   id: string; slug: string; title: string; shortTitle: string; organization: string; advertisementNo: string; description: string; publishedAt: string; updatedAt: string; status: string; totalVacancies: number; applicationStart: string; applicationEnd: string; feeLastDate: string; correctionDate: string; examDate: string; admitCardDate: string; resultDate: string; qualification: string; minAge: number; maxAge: number; location: string; applyUrl: string; notificationUrl: string; officialUrl: string; fee: { category: string; amount: string }[]; vacancyDetails: NonNullable<Recruitment['detail']>['vacancy']['categoryWise']; selectionProcess: string[]; examPattern: NonNullable<Recruitment['detail']>['examPattern']; documents: string[]; howToApply: string[]; faq: { q: string; a: string }[]; relatedJobs: { id: string; title: string; org: string; vacancies: string; qualification: string; lastDate: string }[]
 }
