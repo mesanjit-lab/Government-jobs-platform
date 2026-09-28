@@ -35,7 +35,7 @@ Legend:
 ## Tools
 
 [x] Tools Index (/tools)
-[x] Age Calculator (/tools/age-calculator)
+[x] Age Calculator (/tools/age-calculator) — client-side exact age, totals, and optional cut-off age-range helper
 [x] Photo & Signature Resize (/tools/photo-resize)
 [x] PDF Tools (/tools/pdf) — JPG to PDF, Merge, Compress, Split
 [x] Eligibility Checker (/tools/eligibility-checker)

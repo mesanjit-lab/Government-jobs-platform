@@ -6,39 +6,39 @@ Last updated: September 2026
 
 ## Last Completed Task
 
-Mobile Homepage UI (MobileHome component)
+Recovery: homepage compile typo and Age Calculator restoration
 
 ## Last Agent
 
-Claude (claude.ai chat)
+Codex
 
 ## Files Changed
 
-- app/components/MobileHome.tsx — Created mobile homepage component
-- app/page.tsx — Updated to show MobileHome below lg, desktop above lg
+- app/page.tsx — Removed the stray character following the desktop Tools component
+- app/tools/age-calculator/page.tsx — Restored a client-side Age Calculator with exact age totals, validation, reset, and optional cut-off age-range helper
+- docs/FEATURES.md — Recorded verified Age Calculator behavior
+- MEMORY.md — Updated recovery handoff state
 
-## Tests Run
+## Checks Performed
 
-- npm run dev — local server running
-- Vercel deployment — live at https://government-jobs-platform-sigma.vercel.app
-- Build passed on Vercel
+- npx tsc --noEmit
+- git diff --check
+- Reviewed the homepage and Age Calculator changes for scope and TypeScript issues
 
 ## Known Issues
 
-- Authentication not implemented (Login/Register are UI only)
-- Database not connected (all data is mock/hardcoded)
-- PDF TypeScript Uint8Array error was fixed for Vercel build
-- No real notification system yet
+- Authentication is not implemented (Login/Register are UI only)
+- Database is not connected; recruitment and exam data remains mock/hardcoded
+- No real notification system exists
+- Several existing UI controls and links remain non-functional, including filters and missing detail/alerts routes
 
 ## Current Work
 
-Documentation setup (AGENTS.md, CLAUDE.md, MEMORY.md, NEXT_TASK.md, docs/)
+Recovery task complete; awaiting owner direction. No new task selected.
 
 ## Next Recommended Task
 
-Supabase database setup and connection
-OR
-Login/Register authentication with Supabase Auth
+Supabase database setup remains the approved pending task in NEXT_TASK.md. Do not begin without owner approval.
 
 ---
 
