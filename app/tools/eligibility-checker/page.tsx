@@ -3,7 +3,7 @@ import { useState } from 'react'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import { ChevronRight, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react'
-import { getRecruitmentsForEligibility } from '../../../lib/data/recruitments'
+import { getRecruitmentsForEligibility, hasRecruitmentDetail } from '../../../lib/data/recruitments'
 
 const qualificationLevels: Record<string, number> = {
   "8th": 1, "10th": 2, "12th": 3, "iti": 3, "diploma": 4,
@@ -249,7 +249,7 @@ export default function EligibilityCheckerPage() {
                         <span>💰 Fee: Rs.{job.fee}</span>
                         <span>📅 {job.lastDate}</span>
                       </div>
-                      <a href={"/jobs/" + job.id}
+                      <a href={hasRecruitmentDetail(job.id) ? "/jobs/" + job.id : undefined}
                         className="block mt-2 text-center text-xs bg-blue-700 text-white py-1.5 rounded-lg hover:bg-blue-600">
                         View Details →
                       </a>

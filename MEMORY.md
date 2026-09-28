@@ -6,7 +6,7 @@ Last updated: September 2026
 
 ## Last Completed Task
 
-Backend-readiness Cleanup Task 2: migrate mobile and eligibility recruitment consumers
+Route Integrity Task 3B: gate unsupported job-detail links
 
 ## Last Agent
 
@@ -36,6 +36,7 @@ Codex
 - Several existing UI controls and links remain non-functional, including filters and missing detail/alerts routes
 - MobileHome and Eligibility Checker still use legacy local recruitment data and are the next migration candidates
 - RRB NTPC legacy eligibility data is temporarily excluded because no canonical recruitment fixture exists
+- Remaining route-integrity issues: Results, Admit Cards, Alerts, Syllabus, and placeholder hrefs
 
 ## Current Work
 

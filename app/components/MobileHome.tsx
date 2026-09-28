@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { getLatestRecruitments } from '../../lib/data/recruitments'
+import { getLatestRecruitments, hasRecruitmentDetail } from '../../lib/data/recruitments'
 import { Search, Bell, Menu, X, Home, Briefcase, BarChart2, Wrench, AlertCircle, ChevronRight, MapPin, GraduationCap } from 'lucide-react'
 
 // ============================================================
@@ -281,7 +281,7 @@ export default function MobileHome() {
           </div>
           <div className="divide-y divide-gray-50">
             {closingSoon.map((job) => (
-              <a href={"/jobs/" + job.id} key={job.id} className="flex items-center justify-between px-4 py-3 hover:bg-red-50 transition">
+              <a href={hasRecruitmentDetail(String(job.id)) ? "/jobs/" + job.id : undefined} key={job.id} className="flex items-center justify-between px-4 py-3 hover:bg-red-50 transition">
                 <span className="text-xs font-semibold text-gray-800">{job.title}</span>
                 <div className="flex items-center gap-2">
                   <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${job.urgent ? "bg-red-100 text-red-600" : "bg-orange-100 text-orange-600"}`}>

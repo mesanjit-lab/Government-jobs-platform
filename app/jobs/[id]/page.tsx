@@ -1,6 +1,6 @@
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
-import { getRecruitmentDetailView } from '../../../lib/data/recruitments'
+import { getRecruitmentDetailView, hasRecruitmentDetail } from '../../../lib/data/recruitments'
 import {
   Building2, MapPin, Users, Calendar, GraduationCap,
   Clock, ExternalLink, Bell, BookmarkPlus, CheckCircle2,
@@ -435,7 +435,7 @@ export default async function JobDetail({ params }: { params: Promise<{ id: stri
               <h2 className="text-sm font-bold text-blue-900 mb-3">Related Jobs</h2>
               <div className="flex gap-3 overflow-x-auto pb-2">
                 {job.relatedJobs.map((rj: any) => (
-                  <a key={rj.id} href={"/jobs/" + rj.id} className="min-w-48 border border-gray-100 rounded-xl p-3 hover:bg-blue-50 flex-shrink-0">
+                  <a key={rj.id} href={hasRecruitmentDetail(rj.id) ? "/jobs/" + rj.id : undefined} className="min-w-48 border border-gray-100 rounded-xl p-3 hover:bg-blue-50 flex-shrink-0">
                     <div className="text-xs font-bold text-blue-900">{rj.title}</div>
                     <div className="text-xs text-gray-500 mt-0.5">{rj.org}</div>
                     <div className="text-xs text-gray-600 mt-1">Vacancies: {rj.vacancies}</div>

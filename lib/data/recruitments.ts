@@ -20,6 +20,7 @@ const recruitments: readonly Recruitment[] = [
 
 export function getRecruitments(): readonly Recruitment[] { return recruitments }
 export function getRecruitmentById(id: string): Recruitment | undefined { return recruitments.find((recruitment) => recruitment.id === id) }
+export function hasRecruitmentDetail(id: string): boolean { return Boolean(getRecruitmentById(id)?.detail) }
 export function getLatestRecruitments(limit = 5): readonly Recruitment[] { return recruitments.slice(0, limit) }
 
 export interface EligibilityFee { general: number; obc: number; sc: number; st: number; female: number }
