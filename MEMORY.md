@@ -6,7 +6,7 @@ Last updated: September 2026
 
 ## Last Completed Task
 
-Recovery: homepage compile typo and Age Calculator restoration
+Backend-readiness Cleanup Task 1: shared typed recruitment domain foundation
 
 ## Last Agent
 
@@ -14,16 +14,19 @@ Codex
 
 ## Files Changed
 
-- app/page.tsx — Removed the stray character following the desktop Tools component
-- app/tools/age-calculator/page.tsx — Restored a client-side Age Calculator with exact age totals, validation, reset, and optional cut-off age-range helper
-- docs/FEATURES.md — Recorded verified Age Calculator behavior
-- MEMORY.md — Updated recovery handoff state
+- lib/domain/recruitment.ts — React-independent recruitment domain types
+- lib/data/recruitments.ts — Typed temporary fixture adapter and read-only selectors
+- app/jobs/page.tsx — Uses shared recruitment data
+- app/jobs/[id]/page.tsx — Resolves supported detail records through the shared data boundary
+- app/components/LatestJobs.tsx — Uses shared latest recruitment data
+- docs/DECISIONS.md — Records canonical recruitment lifecycle decision
+- MEMORY.md — Updated handoff state
 
 ## Checks Performed
 
 - npx tsc --noEmit
 - git diff --check
-- Reviewed the homepage and Age Calculator changes for scope and TypeScript issues
+- Verified the shared fixture type has no `any` and supported detail IDs resolve
 
 ## Known Issues
 
@@ -31,6 +34,7 @@ Codex
 - Database is not connected; recruitment and exam data remains mock/hardcoded
 - No real notification system exists
 - Several existing UI controls and links remain non-functional, including filters and missing detail/alerts routes
+- MobileHome and Eligibility Checker still use legacy local recruitment data and are the next migration candidates
 
 ## Current Work
 

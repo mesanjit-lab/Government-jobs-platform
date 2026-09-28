@@ -1,12 +1,7 @@
-const jobs = [
-  { id: 1, title: "SSC CHSL 2024", organization: "Combined Higher Secondary Level", vacancies: "3712", qualification: "12th Pass", lastDate: "15 Jun 2024", status: "New" },
-  { id: 2, title: "Bihar Police Constable 2024", organization: "Bihar Police Recruitment", vacancies: "21391", qualification: "12th Pass", lastDate: "20 Jun 2024", status: "New" },
-  { id: 3, title: "Railway Group D 2024", organization: "Indian Railways Recruitment", vacancies: "32438", qualification: "10th Pass", lastDate: "25 Jun 2024", status: "Hot" },
-  { id: 4, title: "UPSSSC PET 2024", organization: "Uttar Pradesh PET Exam", vacancies: "50000+", qualification: "12th Pass", lastDate: "30 Jun 2024", status: "Hot" },
-  { id: 5, title: "SSC CGL 2024", organization: "Combined Graduate Level", vacancies: "17727", qualification: "Graduate", lastDate: "10 Jul 2024", status: "Updated" },
-]
+import { getLatestRecruitments } from '../../lib/data/recruitments'
 
 export default function LatestJobs() {
+  const jobs = getLatestRecruitments()
   return (
     <div className="bg-white rounded-xl shadow p-3">
       <div className="flex justify-between items-center mb-2">
@@ -17,10 +12,10 @@ export default function LatestJobs() {
       {/* Job rows */}
       <div className="space-y-1">
         {jobs.map((job) => (
-          <a href={"/jobs/" + job.id} key={job.id} className="grid grid-cols-12 items-center text-xs py-2 px-1 border-b border-gray-50 hover:bg-blue-50 rounded transition">
+          <a href={job.detail ? "/jobs/" + job.id : undefined} key={job.id} className={`grid grid-cols-12 items-center text-xs py-2 px-1 border-b border-gray-50 rounded transition ${job.detail ? 'hover:bg-blue-50' : ''}`}>
             <div className="col-span-4">
               <div className="font-semibold text-blue-800 leading-tight">{job.title}</div>
-              <div className="text-gray-600 text-xs font-medium">{job.organization}</div>
+              <div className="text-gray-600 text-xs font-medium">{job.organization.name}</div>
             </div>
             <span className="col-span-2 text-center text-gray-700 font-medium">{job.vacancies}</span>
             <span className="col-span-2 text-center text-gray-600">{job.qualification}</span>

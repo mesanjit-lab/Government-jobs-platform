@@ -1,5 +1,6 @@
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
+import { getRecruitmentDetailView } from '../../../lib/data/recruitments'
 import {
   Building2, MapPin, Users, Calendar, GraduationCap,
   Clock, ExternalLink, Bell, BookmarkPlus, CheckCircle2,
@@ -11,95 +12,6 @@ const orgLogos: Record<string, { bg: string, text: string, initials: string }> =
   "Bihar Police Recruitment Board": { bg: "bg-yellow-500", text: "text-white", initials: "BP" },
   "Indian Railways": { bg: "bg-red-600", text: "text-white", initials: "RRB" },
   "UPSSSC": { bg: "bg-green-700", text: "text-white", initials: "UP" },
-}
-
-const jobs: Record<string, any> = {
-  "1": {
-    id: "1", slug: "ssc-chsl-2024",
-    title: "SSC CHSL 2024", shortTitle: "SSC CHSL",
-    organization: "SSC",
-    advertisementNo: "SSC/CHSL/2024",
-    description: "Combined Higher Secondary Level Examination 2024",
-    publishedAt: "01 Jun 2024", updatedAt: "06 Sep 2026",
-    status: "Application Open",
-    totalVacancies: 3712,
-    applicationStart: "01 Jun 2024", applicationEnd: "15 Jun 2024",
-    feeLastDate: "16 Jun 2024", correctionDate: "17 Jun 2024",
-    examDate: "To Be Announced", admitCardDate: "To Be Announced", resultDate: "To Be Announced",
-    qualification: "12th Pass", minAge: 18, maxAge: 27,
-    location: "All India", applyUrl: "https://ssc.nic.in",
-    notificationUrl: "https://ssc.nic.in", officialUrl: "https://ssc.nic.in",
-    fee: [
-      { category: "General / OBC", amount: "100" },
-      { category: "SC / ST", amount: "0" },
-      { category: "Female", amount: "0" },
-      { category: "PwBD", amount: "0" },
-    ],
-    vacancyDetails: [
-      { post: "LDC / JSA", ur: 612, obc: 390, sc: 235, st: 117, ews: 156, total: 1510 },
-      { post: "PA / SA", ur: 1234, obc: 823, sc: 612, st: 306, ews: 408, total: 3383 },
-      { post: "DEO", ur: 245, obc: 163, sc: 98, st: 49, ews: 65, total: 620 },
-    ],
-    selectionProcess: ["Tier 1 (CBT)", "Tier 2 (CBT)", "Skill Test", "Merit List"],
-    examPattern: [
-      { subject: "General Intelligence", questions: 25, marks: 50, duration: "20" },
-      { subject: "General Awareness", questions: 25, marks: 50, duration: "20" },
-      { subject: "Quantitative Aptitude", questions: 25, marks: 50, duration: "20" },
-      { subject: "English", questions: 25, marks: 50, duration: "20" },
-    ],
-    documents: ["Passport-size photograph", "Signature", "Educational certificates", "Identity proof", "Category certificate if applicable"],
-    howToApply: ["Visit official SSC website", "Read official notification carefully", "Register / Login", "Fill application form", "Upload documents", "Pay fee if applicable", "Submit application", "Download/print application form"],
-    faq: [
-      { q: "When does SSC CHSL 2024 application start?", a: "Application started from 01 Jun 2024." },
-      { q: "What is the last date to apply?", a: "Last date is 15 Jun 2024." },
-      { q: "What is the application fee?", a: "General/OBC: Rs.100. SC/ST/Female/PwBD: Nil." },
-      { q: "What is the age limit?", a: "Minimum 18 years, Maximum 27 years." },
-      { q: "What qualification is required?", a: "12th Pass from a recognized board." },
-    ],
-    relatedJobs: [
-      { id: "2", title: "Bihar Police Constable 2024", org: "Bihar Police", vacancies: "21391", qualification: "12th Pass", lastDate: "20 Jun 2024" },
-      { id: "3", title: "Railway Group D 2024", org: "Indian Railways", vacancies: "32438", qualification: "10th Pass", lastDate: "25 Jun 2024" },
-    ],
-  },
-  "2": {
-    id: "2", slug: "bihar-police-2024",
-    title: "Bihar Police Constable 2024", shortTitle: "Bihar Police",
-    organization: "Bihar Police Recruitment Board",
-    advertisementNo: "BPSSC/2024",
-    description: "Bihar Police Constable Recruitment 2024",
-    publishedAt: "01 May 2024", updatedAt: "06 Sep 2026",
-    status: "Application Open",
-    totalVacancies: 21391,
-    applicationStart: "01 May 2024", applicationEnd: "20 Jun 2024",
-    feeLastDate: "21 Jun 2024", correctionDate: "22 Jun 2024",
-    examDate: "Aug 2024", admitCardDate: "Jul 2024", resultDate: "To Be Announced",
-    qualification: "12th Pass", minAge: 18, maxAge: 25,
-    location: "Bihar", applyUrl: "https://csbc.bih.nic.in",
-    notificationUrl: "https://csbc.bih.nic.in", officialUrl: "https://csbc.bih.nic.in",
-    fee: [
-      { category: "General / OBC", amount: "200" },
-      { category: "SC / ST", amount: "50" },
-    ],
-    vacancyDetails: [
-      { post: "Constable (Male)", ur: 8000, obc: 4000, sc: 2000, st: 1000, ews: 1500, total: 16500 },
-      { post: "Constable (Female)", ur: 2000, obc: 1000, sc: 500, st: 250, ews: 641, total: 4391 },
-    ],
-    selectionProcess: ["Written Test", "Physical Test", "Document Verification", "Merit List"],
-    examPattern: [
-      { subject: "General Knowledge", questions: 50, marks: 50, duration: "30" },
-      { subject: "Hindi", questions: 25, marks: 25, duration: "15" },
-      { subject: "Mathematics", questions: 25, marks: 25, duration: "15" },
-    ],
-    documents: ["Passport-size photograph", "Signature", "10th/12th Certificate", "Identity proof", "Category certificate", "Domicile certificate"],
-    howToApply: ["Visit CSBC official website", "Read notification", "Register online", "Fill form", "Upload documents", "Pay fee", "Submit", "Print application"],
-    faq: [
-      { q: "What is the last date?", a: "20 Jun 2024." },
-      { q: "What is the age limit?", a: "18-25 years." },
-    ],
-    relatedJobs: [
-      { id: "1", title: "SSC CHSL 2024", org: "SSC", vacancies: "3712", qualification: "12th Pass", lastDate: "15 Jun 2024" },
-    ],
-  },
 }
 
 function AccordionSection({ title, icon, children, defaultOpen = false }: { title: string, icon: React.ReactNode, children: React.ReactNode, defaultOpen?: boolean }) {
@@ -118,7 +30,7 @@ function AccordionSection({ title, icon, children, defaultOpen = false }: { titl
 
 export default async function JobDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const job = jobs[id]
+  const job = getRecruitmentDetailView(id)
   const logo = orgLogos[job?.organization] || { bg: "bg-blue-700", text: "text-white", initials: "MR" }
 
   if (!job) {

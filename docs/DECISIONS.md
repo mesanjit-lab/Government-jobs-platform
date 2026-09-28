@@ -75,3 +75,12 @@ Date: September 2026
 Decision: Use lucide-react as the primary icon library
 Reason: Clean, consistent, tree-shakeable, TypeScript support
 Status: Implemented
+
+---
+
+## ADR-009 — Recruitment is the canonical public lifecycle entity
+
+Date: September 2026
+Decision: Public UI reads recruitment data through a shared typed data boundary.
+Reason: Recruitment owns the public lifecycle; future admit cards, answer keys, results, exam dates, corrections, and updates attach to it rather than duplicating job records.
+Status: Implemented with temporary typed fixtures; database adapter planned.

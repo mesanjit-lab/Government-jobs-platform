@@ -1,18 +1,9 @@
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-
-const jobs = [
-  { id: 1, title: "SSC CHSL 2024", organization: "Staff Selection Commission", vacancies: "3712", qualification: "12th Pass", lastDate: "15 Jun 2024", status: "New", category: "Central Govt", state: "All India" },
-  { id: 2, title: "Bihar Police Constable 2024", organization: "Bihar Police", vacancies: "21391", qualification: "12th Pass", lastDate: "20 Jun 2024", status: "New", category: "State Govt", state: "Bihar" },
-  { id: 3, title: "Railway Group D 2024", organization: "Indian Railways", vacancies: "32438", qualification: "10th Pass", lastDate: "25 Jun 2024", status: "Hot", category: "Railway", state: "All India" },
-  { id: 4, title: "UPSSSC PET 2024", organization: "UPSSSC", vacancies: "50000+", qualification: "12th Pass", lastDate: "30 Jun 2024", status: "Hot", category: "State Govt", state: "Uttar Pradesh" },
-  { id: 5, title: "SSC CGL 2024", organization: "Staff Selection Commission", vacancies: "17727", qualification: "Graduate", lastDate: "10 Jul 2024", status: "Updated", category: "Central Govt", state: "All India" },
-  { id: 6, title: "UPSC Civil Services 2024", organization: "UPSC", vacancies: "1056", qualification: "Graduate", lastDate: "20 Feb 2024", status: "Active", category: "Central Govt", state: "All India" },
-  { id: 7, title: "Bihar BPSC 70th 2024", organization: "BPSC", vacancies: "2100", qualification: "Graduate", lastDate: "25 Jul 2024", status: "New", category: "State Govt", state: "Bihar" },
-  { id: 8, title: "RRB ALP 2024", organization: "Railway Recruitment Board", vacancies: "5696", qualification: "10th Pass", lastDate: "30 Jul 2024", status: "New", category: "Railway", state: "All India" },
-]
+import { getRecruitments } from '../../lib/data/recruitments'
 
 export default function JobsPage() {
+  const jobs = getRecruitments()
   return (
     <main className="min-h-screen bg-gray-50">
       <Header />
@@ -86,11 +77,11 @@ export default function JobsPage() {
 
             <div className="space-y-3">
               {jobs.map((job) => (
-                <a href={"/jobs/" + job.id} key={job.id} className="block border border-gray-100 rounded-lg p-3 hover:bg-blue-50 transition">
+                <a href={job.detail ? "/jobs/" + job.id : undefined} key={job.id} className={`block border border-gray-100 rounded-lg p-3 transition ${job.detail ? 'hover:bg-blue-50' : ''}`}>
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="text-sm font-bold text-blue-800">{job.title}</h3>
-                      <p className="text-xs text-gray-600 font-medium mt-0.5">{job.organization}</p>
+                      <p className="text-xs text-gray-600 font-medium mt-0.5">{job.organization.name}</p>
                     </div>
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ml-2 ${
                       job.status === "New" ? "bg-green-100 text-green-700" :
