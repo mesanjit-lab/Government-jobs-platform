@@ -17,7 +17,7 @@ export default function LatestResults() {
       {/* Result rows */}
       <div className="space-y-1">
         {results.map((result) => (
-          <a href={"/results/" + result.id} key={result.id} className="grid grid-cols-12 items-center text-xs py-2 px-1 border-b border-gray-50 hover:bg-green-50 rounded transition">
+          <a href={"/jobs/" + result.id} key={result.id} className="grid grid-cols-12 items-center text-xs py-2 px-1 border-b border-gray-50 hover:bg-green-50 rounded transition">
             <div className="col-span-7">
               <div className="font-semibold text-blue-800 leading-tight">{result.title}</div>
               <div className="text-gray-600 text-xs font-medium">{result.organization}</div>
