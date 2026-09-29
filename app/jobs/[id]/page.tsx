@@ -31,9 +31,9 @@ function AccordionSection({ title, icon, children, defaultOpen = false }: { titl
 export default async function JobDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const job = getRecruitmentDetailView(id)
-  const logo = orgLogos[job?.organization] || { bg: "bg-blue-700", text: "text-white", initials: "MR" }
+  const vacancyDetails = job?.vacancyDetails
 
-  if (!job) {
+  if (!job || !vacancyDetails) {
     return (
       <main className="min-h-screen bg-gray-50">
         <Header />
@@ -45,6 +45,8 @@ export default async function JobDetail({ params }: { params: Promise<{ id: stri
       </main>
     )
   }
+
+  const logo = orgLogos[job.organization] || { bg: "bg-blue-700", text: "text-white", initials: "MR" }
 
   return (
     <main className="min-h-screen bg-gray-50 pb-32">
@@ -248,7 +250,7 @@ export default async function JobDetail({ params }: { params: Promise<{ id: stri
                     </tr>
                   </thead>
                   <tbody>
-                    {job.vacancyDetails.map((v: any, i: number) => (
+                    {vacancyDetails.map((v, i) => (
                       <tr key={i} className="border-b border-gray-100 hover:bg-blue-50">
                         <td className="py-1.5 px-2 text-blue-900 font-medium">{v.post}</td>
                         <td className="py-1.5 text-center text-gray-700">{v.ur}</td>
@@ -263,12 +265,12 @@ export default async function JobDetail({ params }: { params: Promise<{ id: stri
                   <tfoot>
                     <tr className="bg-gray-100 border-t-2 border-gray-200">
                       <td className="py-1.5 px-2 font-bold text-gray-700">Total</td>
-                      <td className="py-1.5 text-center font-bold text-gray-700">{job.vacancyDetails.reduce((sum: number, v: any) => sum + v.ur, 0)}</td>
-                      <td className="py-1.5 text-center font-bold text-gray-700">{job.vacancyDetails.reduce((sum: number, v: any) => sum + v.obc, 0)}</td>
-                      <td className="py-1.5 text-center font-bold text-gray-700">{job.vacancyDetails.reduce((sum: number, v: any) => sum + v.sc, 0)}</td>
-                      <td className="py-1.5 text-center font-bold text-gray-700">{job.vacancyDetails.reduce((sum: number, v: any) => sum + v.st, 0)}</td>
-                      <td className="py-1.5 text-center font-bold text-gray-700">{job.vacancyDetails.reduce((sum: number, v: any) => sum + v.ews, 0)}</td>
-                      <td className="py-1.5 text-center px-2 font-black text-blue-900">{job.vacancyDetails.reduce((sum: number, v: any) => sum + v.total, 0)}</td>
+                      <td className="py-1.5 text-center font-bold text-gray-700">{vacancyDetails.reduce((sum, v) => sum + v.ur, 0)}</td>
+                      <td className="py-1.5 text-center font-bold text-gray-700">{vacancyDetails.reduce((sum, v) => sum + v.obc, 0)}</td>
+                      <td className="py-1.5 text-center font-bold text-gray-700">{vacancyDetails.reduce((sum, v) => sum + v.sc, 0)}</td>
+                      <td className="py-1.5 text-center font-bold text-gray-700">{vacancyDetails.reduce((sum, v) => sum + v.st, 0)}</td>
+                      <td className="py-1.5 text-center font-bold text-gray-700">{vacancyDetails.reduce((sum, v) => sum + v.ews, 0)}</td>
+                      <td className="py-1.5 text-center px-2 font-black text-blue-900">{vacancyDetails.reduce((sum, v) => sum + v.total, 0)}</td>
                     </tr>
                   </tfoot>
                 </table>

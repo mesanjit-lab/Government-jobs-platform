@@ -1,6 +1,9 @@
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 
+// Matches the detail fixtures currently available in /syllabus/[id].
+const supportedDetailIds = new Set([1, 2, 3])
+
 const syllabi = [
   { id: 1, title: "SSC CGL Syllabus 2024", organization: "Staff Selection Commission", examName: "Combined Graduate Level", updatedOn: "01 Jan 2024", qualification: "Graduate", category: "Central Govt", subjects: ["General Intelligence", "General Awareness", "Quantitative Aptitude", "English"] },
   { id: 2, title: "SSC CHSL Syllabus 2024", organization: "Staff Selection Commission", examName: "Combined Higher Secondary Level", updatedOn: "01 Jan 2024", qualification: "12th Pass", category: "Central Govt", subjects: ["General Intelligence", "English", "Quantitative Aptitude", "General Awareness"] },
@@ -72,7 +75,7 @@ export default function SyllabusPage() {
 
             <div className="space-y-3">
               {syllabi.map((syllabus) => (
-                <a href={"/syllabus/" + syllabus.id} key={syllabus.id} className="block border border-gray-100 rounded-lg p-3 hover:bg-blue-50 transition">
+                <a href={supportedDetailIds.has(syllabus.id) ? "/syllabus/" + syllabus.id : undefined} key={syllabus.id} className="block border border-gray-100 rounded-lg p-3 hover:bg-blue-50 transition">
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="text-sm font-bold text-blue-900">{syllabus.title}</h3>
