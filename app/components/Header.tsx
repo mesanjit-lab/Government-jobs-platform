@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import Link from 'next/link'
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -13,8 +14,6 @@ export default function Header() {
           <span className="absolute left-1/2 -translate-x-1/2 hidden md:block">
     Welcome to MyResult - Your Trusted Government Job Portal
   </span>
-          <a href="#" className="hover:underline">Telegram</a>
-          <a href="#" className="hover:underline">WhatsApp</a>
         </div>
       </div>
 
@@ -45,7 +44,7 @@ export default function Header() {
               </button>
               <div className="absolute top-6 right-0 bg-white border border-gray-200 rounded-lg shadow-lg w-44 hidden group-hover:block z-50">
                 <a href="/exam-calendar" className="block px-4 py-2 text-xs text-gray-700 hover:bg-blue-50 hover:text-blue-700">Exam Calendar</a>
-                <a href="/alerts" className="block px-4 py-2 text-xs text-gray-700 hover:bg-blue-50 hover:text-blue-700">Job Alerts</a>
+                <Link href="/alerts" className="block px-4 py-2 text-xs text-gray-700 hover:bg-blue-50 hover:text-blue-700">Job Alerts</Link>
                 <a href="/about" className="block px-4 py-2 text-xs text-gray-700 hover:bg-blue-50 hover:text-blue-700">About Us</a>
                 <a href="/contact" className="block px-4 py-2 text-xs text-gray-700 hover:bg-blue-50 hover:text-blue-700">Contact</a>
               </div>
@@ -75,7 +74,7 @@ export default function Header() {
             <a href="/syllabus" className="block text-sm text-gray-700 py-2 border-b border-gray-100 hover:text-blue-700">Syllabus</a>
             <a href="/tools" className="block text-sm text-gray-700 py-2 border-b border-gray-100 hover:text-blue-700">Tools</a>
             <a href="/exam-calendar" className="block text-sm text-gray-700 py-2 border-b border-gray-100 hover:text-blue-700">Exam Calendar</a>
-            <a href="/alerts" className="block text-sm text-gray-700 py-2 border-b border-gray-100 hover:text-blue-700">Job Alerts</a>
+            <Link href="/alerts" className="block text-sm text-gray-700 py-2 border-b border-gray-100 hover:text-blue-700">Job Alerts</Link>
             <div className="flex gap-2 pt-2">
               <a href="/login" className="flex-1 text-center border border-blue-700 text-blue-700 text-sm px-3 py-2 rounded hover:bg-blue-50">Login</a>
               <a href="/register" className="flex-1 text-center bg-blue-700 text-white text-sm px-3 py-2 rounded hover:bg-blue-600">Register</a>

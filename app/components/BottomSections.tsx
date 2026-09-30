@@ -1,3 +1,6 @@
+import Link from 'next/link'
+import { hasRecruitmentDetail } from '../../lib/data/recruitments'
+
 const closingSoonJobs = [
   { id: 1, title: "SSC CHSL 2024", daysLeft: "10 Days Left", urgent: true },
   { id: 2, title: "Bihar Police Constable 2024", daysLeft: "15 Days Left", urgent: false },
@@ -28,14 +31,25 @@ export default function BottomSections() {
           <a href="/jobs" className="text-xs text-blue-600 hover:underline">View All</a>
         </div>
         <div className="space-y-2">
-          {closingSoonJobs.map((job) => (
-            <a href={"/jobs/" + job.id} key={job.id} className="flex justify-between items-center py-2 border-b border-gray-100 hover:bg-gray-50 px-1 rounded">
-              <span className="text-xs text-gray-700">{job.title}</span>
-              <span className={`text-xs px-2 py-0.5 rounded font-medium ${job.urgent ? "bg-red-100 text-red-600" : "bg-orange-100 text-orange-600"}`}>
-                {job.daysLeft}
-              </span>
-            </a>
-          ))}
+          {closingSoonJobs.map((job) => {
+            const content = (
+              <>
+                <span className="text-xs text-gray-700">{job.title}</span>
+                <span className={`text-xs px-2 py-0.5 rounded font-medium ${job.urgent ? "bg-red-100 text-red-600" : "bg-orange-100 text-orange-600"}`}>
+                  {job.daysLeft}
+                </span>
+              </>
+            )
+            return hasRecruitmentDetail(String(job.id)) ? (
+              <Link href={"/jobs/" + job.id} key={job.id} className="flex justify-between items-center py-2 border-b border-gray-100 hover:bg-gray-50 px-1 rounded">
+                {content}
+              </Link>
+            ) : (
+              <div key={job.id} className="flex justify-between items-center py-2 border-b border-gray-100 px-1 rounded">
+                {content}
+              </div>
+            )
+          })}
         </div>
       </div>
 

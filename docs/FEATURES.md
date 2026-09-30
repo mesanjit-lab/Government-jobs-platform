@@ -23,6 +23,7 @@ Legend:
 [x] Syllabus listing (/syllabus)
 [x] Syllabus Detail (/syllabus/[id])
 [x] Exam Calendar (/exam-calendar)
+[x] Job Alerts information (/alerts) — informational frontend page only; no subscriptions or notifications
 [x] About (/about)
 [x] Contact (/contact)
 [x] Privacy Policy (/privacy)
@@ -76,6 +77,7 @@ Legend:
 
 ## Notifications
 
+[ ] Personalized recruitment notification system — NOT IMPLEMENTED; /alerts only explains the planned feature
 [ ] Email notifications
 [ ] WhatsApp notifications
 [ ] SMS notifications

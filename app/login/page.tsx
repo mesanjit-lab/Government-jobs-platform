@@ -80,7 +80,7 @@ export default function LoginPage() {
             </div>
 
             <div className="flex justify-end">
-              <a href="#" className="text-xs text-blue-600 hover:underline">Forgot Password?</a>
+              <span className="text-xs text-gray-500">Forgot Password? Not available yet.</span>
             </div>
 
             <button onClick={handleLogin} disabled={loading}

@@ -71,7 +71,7 @@ export default function AnswerKeyPage() {
 
             <div className="space-y-3">
               {answerKeys.map((key) => (
-                <a href={"/answer-key/" + key.id} key={key.id} className="block border border-gray-100 rounded-lg p-3 hover:bg-orange-50 transition">
+                <div key={key.id} className="block border border-gray-100 rounded-lg p-3 hover:bg-orange-50 transition">
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="text-sm font-bold text-blue-900">{key.title}</h3>
@@ -87,7 +87,7 @@ export default function AnswerKeyPage() {
                     <span className="text-green-600">📅 Released: <strong>{key.releaseDate}</strong></span>
                     <span className="text-red-500">⚠️ Objection: <strong>{key.objectionStart}</strong> to <strong>{key.objectionEnd}</strong></span>
                   </div>
-                </a>
+                </div>
               ))}
             </div>
           </div>

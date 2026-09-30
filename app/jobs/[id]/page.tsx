@@ -83,10 +83,10 @@ export default async function JobDetail({ params }: { params: Promise<{ id: stri
               </div>
             </div>
             <div className="flex flex-col gap-2 md:min-w-48">
-              <a href={job.applyUrl} target="_blank" className="bg-white text-blue-900 font-bold text-sm px-4 py-2 rounded-lg hover:bg-blue-50 text-center flex items-center justify-center gap-1">
+              <a href={job.applyUrl} target="_blank" rel="noopener noreferrer" className="bg-white text-blue-900 font-bold text-sm px-4 py-2 rounded-lg hover:bg-blue-50 text-center flex items-center justify-center gap-1">
                 Apply Online <ExternalLink className="w-3 h-3" />
               </a>
-              <a href={job.notificationUrl} target="_blank" className="border border-white text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-800 text-center">
+              <a href={job.notificationUrl} target="_blank" rel="noopener noreferrer" className="border border-white text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-800 text-center">
                 Official Notification
               </a>
               <button className="border border-white text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-800 text-center flex items-center justify-center gap-1">
@@ -454,7 +454,7 @@ export default async function JobDetail({ params }: { params: Promise<{ id: stri
                 <CheckCircle2 className="w-4 h-4 text-green-600" /> Official Source
               </h2>
               <p className="text-xs text-gray-600 mb-2">MyResult provides recruitment information for informational purposes. Candidates should always verify important details from the official recruitment notification and official website.</p>
-              <a href={job.officialUrl} target="_blank" className="text-xs text-blue-700 font-semibold hover:underline flex items-center gap-1">
+              <a href={job.officialUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-700 font-semibold hover:underline flex items-center gap-1">
                 Official Website <ExternalLink className="w-3 h-3" />
               </a>
             </div>
@@ -472,13 +472,13 @@ export default async function JobDetail({ params }: { params: Promise<{ id: stri
                     { label: "Apply Online", url: job.applyUrl, type: "primary" },
                     { label: "Official Notification", url: job.notificationUrl, type: "secondary" },
                     { label: "Official Website", url: job.officialUrl, type: "secondary" },
-                    { label: "Admit Card", url: "#", type: "secondary" },
-                    { label: "Result", url: "#", type: "secondary" },
-                    { label: "Answer Key", url: "#", type: "secondary" },
-                    { label: "Exam Date", url: "#", type: "secondary" },
-                    { label: "Short Notice", url: "#", type: "secondary" },
-                  ].map((link, i) => (
-                    <a key={i} href={link.url} target="_blank"
+                    { label: "Admit Card", url: null, type: "secondary" },
+                    { label: "Result", url: null, type: "secondary" },
+                    { label: "Answer Key", url: null, type: "secondary" },
+                    { label: "Exam Date", url: null, type: "secondary" },
+                    { label: "Short Notice", url: null, type: "secondary" },
+                  ].map((link, i) => link.url ? (
+                    <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
                       className={`flex items-center justify-center gap-1 w-full text-xs py-2 px-3 rounded-lg font-semibold ${
                         link.type === "primary"
                           ? "bg-blue-700 text-white hover:bg-blue-600"
@@ -487,6 +487,10 @@ export default async function JobDetail({ params }: { params: Promise<{ id: stri
                       {link.label}
                       <ExternalLink className="w-3 h-3 flex-shrink-0" />
                     </a>
+                  ) : (
+                    <span key={i} className="flex flex-wrap items-center justify-center gap-1 w-full text-xs py-2 px-3 rounded-lg font-semibold border border-gray-200 text-gray-500">
+                      {link.label} <span className="font-normal">— Not available</span>
+                    </span>
                   ))}
                 </div>
               </div>
@@ -513,7 +517,7 @@ export default async function JobDetail({ params }: { params: Promise<{ id: stri
       {/* Sticky bottom bar */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg px-4 py-3 z-50">
         <div className="max-w-6xl mx-auto flex gap-3">
-          <a href={job.applyUrl} target="_blank" className="flex-1 bg-blue-700 text-white text-sm font-bold py-2.5 rounded-lg text-center hover:bg-blue-600">
+          <a href={job.applyUrl} target="_blank" rel="noopener noreferrer" className="flex-1 bg-blue-700 text-white text-sm font-bold py-2.5 rounded-lg text-center hover:bg-blue-600">
             Apply Online
           </a>
           <button className="flex-1 border-2 border-blue-700 text-blue-700 text-sm font-bold py-2.5 rounded-lg hover:bg-blue-50">

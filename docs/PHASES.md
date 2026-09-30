@@ -28,6 +28,7 @@ Last updated: September 2026
 - [x] Answer Keys listing
 - [x] Syllabus listing + detail
 - [x] Exam Calendar
+- [x] Job Alerts informational page (/alerts) — frontend only; Phase 5 notification functionality remains unimplemented
 - [x] Tools — Age Calculator
 - [x] Tools — Photo & Signature Resize
 - [x] Tools — PDF Tools

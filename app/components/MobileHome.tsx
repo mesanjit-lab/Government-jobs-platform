@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import Link from 'next/link'
 import { getLatestRecruitments, hasRecruitmentDetail } from '../../lib/data/recruitments'
 import { Search, Bell, Menu, X, Home, Briefcase, BarChart2, Wrench, AlertCircle, ChevronRight, MapPin, GraduationCap } from 'lucide-react'
 
@@ -41,7 +42,7 @@ const navItems = [
   { label: "Jobs", icon: Briefcase, href: "/jobs" },
   { label: "Results", icon: BarChart2, href: "/results" },
   { label: "Tools", icon: Wrench, href: "/tools" },
-  { label: "Alerts", icon: AlertCircle, href: "/register" },
+  { label: "Alerts", icon: AlertCircle, href: "/alerts" },
 ]
 
 export default function MobileHome() {
@@ -66,10 +67,9 @@ export default function MobileHome() {
             <button className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-100">
               <Search className="w-5 h-5 text-gray-700" />
             </button>
-            <button className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-100 relative">
+            <Link href="/alerts" aria-label="About planned job alerts" className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-100 relative">
               <Bell className="w-5 h-5 text-gray-700" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
+            </Link>
           </div>
         </div>
       </header>
@@ -339,11 +339,11 @@ export default function MobileHome() {
       <section className="px-4 py-2">
         <div className="bg-blue-700 rounded-2xl p-5 text-center">
           <div className="text-2xl mb-2">🔔</div>
-          <h2 className="text-sm font-bold text-white mb-1">Never Miss a Job Alert!</h2>
-          <p className="text-xs text-blue-200 mb-3">Get instant notifications for new jobs, results and admit cards.</p>
-          <a href="/register" className="block bg-white text-blue-700 font-bold text-sm py-2.5 rounded-xl hover:bg-blue-50">
-            Get Free Job Alerts
-          </a>
+          <h2 className="text-sm font-bold text-white mb-1">Job Alerts — Planned</h2>
+          <p className="text-xs text-blue-200 mb-3">Personalized notifications are not available yet.</p>
+          <Link href="/alerts" className="block bg-white text-blue-700 font-bold text-sm py-2.5 rounded-xl hover:bg-blue-50">
+            Learn About Job Alerts
+          </Link>
         </div>
       </section>
 
@@ -356,12 +356,12 @@ export default function MobileHome() {
             const Icon = item.icon
             const isActive = item.label === activeNav
             return (
-              <a key={item.label} href={item.href}
+              <Link key={item.label} href={item.href}
                 onClick={() => setActiveNav(item.label)}
                 className={`flex flex-col items-center justify-center gap-1 transition ${isActive ? 'text-blue-600' : 'text-gray-400 hover:text-blue-500'}`}>
                 <Icon className={`w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-400'}`} />
                 <span className="text-xs font-semibold">{item.label}</span>
-              </a>
+              </Link>
             )
           })}
         </div>
