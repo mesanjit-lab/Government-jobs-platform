@@ -1,6 +1,6 @@
 # DECISIONS.md — Architecture Decision Log
 
-Last updated: September 2026
+Last updated: October 2026
 
 ---
 
@@ -84,3 +84,24 @@ Date: September 2026
 Decision: Public UI reads recruitment data through a shared typed data boundary.
 Reason: Recruitment owns the public lifecycle; future admit cards, answer keys, results, exam dates, corrections, and updates attach to it rather than duplicating job records.
 Status: Implemented with temporary typed fixtures; database adapter planned.
+
+---
+
+## ADR-010 — Separate canonical contracts, public views and Admin input
+
+Date: October 2026
+Decision: Keep Recruitment/RecruitmentDetail and related domain contracts in lib/domain, with opaque string IDs, optional unknown facts and readonly collections. Preserve the old UI-shaped fixture contract in explicitly named lib/data/recruitment-views.ts DTOs. Only type references change in the current adapter; fixture facts and selector outputs do not change.
+Reason: Display badges, formatted dates/counts and related-card summaries are not normalized persistence fields. Forcing old mock data into a future schema would require guessed IDs/dates and risk public regressions.
+Decision: Dependency-free validateRecruitmentInput accepts complete create/update content snapshots separately from persisted Recruitment. It validates unknown input, builds typed allowed fields and rejects workflow/audit properties. No validation/test package was installed.
+Limits: Structural validation is not authorization, official-source verification or a save operation. Existing view DTOs retain the documented no-mutation boundary rather than adding cloning/deep-freeze machinery. Supabase replacement still needs server/client loading and domain-to-view mapping; it is not an async drop-in for synchronous fixture imports.
+Status: Contracts/validation and mock compatibility implemented; backend/Admin integration NOT IMPLEMENTED.
+
+---
+
+## ADR-011 — Separate lifecycle, editorial publication and human verification
+
+Date: October 2026
+Decision: Lifecycle, publicationState and verificationState are independent. Preview is a read-only action. Verified content requires human official-source review tied to contentVersion; any content/child/source edit must invalidate it before republishing. AI extraction records origin but never implies verification.
+Decision: Reconcile DATABASE.md around organizations, recruitments and owned normalized content, with source/review evidence and independent workflow on future lifecycle updates. Do not create separate competing jobs/results/admit-card recruitment identities. Defer user tracking, delivery infrastructure and optional revision snapshots.
+Reason: Draft → Preview → Verify → Publish must not accidentally publish unverified automation output or leak child/update drafts beneath a public parent. Unknown factual data stays absent.
+Status: Domain contracts and schema design only. No migrations, roles/RLS, persistence, verification service, Admin CMS or notification infrastructure implemented.

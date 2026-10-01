@@ -1,12 +1,12 @@
 # MEMORY.md — Current Handoff State
 
-Last updated: September 2026
+Last updated: October 2026
 
 ---
 
-## Last Completed Task
+## Current Batch
 
-Frontend Route/Navigation Integrity Batch — continued from interrupted work at checkpoint 9daf724
+Backend Readiness — Domain Contracts, Admin Input Validation and Database Schema Reconciliation. Continued the interrupted four-file implementation from the clean committed checkpoint 8c2b8db (master, synchronized with origin/master). Implementation, documentation and verification completed; awaiting owner review/commit approval.
 
 ## Last Agent
 
@@ -14,27 +14,35 @@ Codex
 
 ## Files Changed
 
-- app/alerts/page.tsx — New informational page; explicitly no subscriptions or personalized notifications
-- app/components/Header.tsx — Removed Telegram/WhatsApp placeholder links; Alerts uses Next.js Link
-- app/components/Tools.tsx — Corrected two tool URLs; Telegram is unavailable/non-clickable; Alerts is labeled planned
-- app/components/BottomSections.tsx — Closing Soon uses hasRecruitmentDetail; IDs 3–5 remain visible without detail links
-- app/components/MobileHome.tsx — Alerts navigation, bell, and informational CTA point to /alerts; removed fake unread indicator
-- app/login/page.tsx — Forgot Password is non-navigating unavailable text
-- app/answer-key/page.tsx — All eight records remain visible without nonexistent detail navigation
-- app/jobs/[id]/page.tsx — Five actual sidebar placeholder URLs replaced with unavailable text; real external links use noopener noreferrer
-- docs/FEATURES.md and docs/PHASES.md — Record Alerts informational UI only; real notifications remain NOT IMPLEMENTED
-- MEMORY.md — Updated handoff state
+- lib/domain/recruitment.ts — Readonly, DB/framework/UI-independent identity/content/detail contracts; optional unknown facts; separate lifecycle/publication/verification states and version-bound verification metadata.
+- lib/data/recruitment-views.ts (new) — Compatibility DTOs for unchanged legacy display fixtures. Not a second persisted Recruitment entity.
+- lib/data/recruitments.ts — Type references now use the explicit view contract; fixture literals and selector runtime logic unchanged.
+- lib/validation/recruitment.ts (new) — Dependency-free unknown-input validation for full create/update content snapshots; typed success or path-specific issues; rejects workflow/audit fields.
+- docs/DATABASE.md — Replaced flat jobs-table plan with normalized recruitment-owned content, provenance/review safeguards and clearly deferred user/notification entities; design only.
+- docs/ARCHITECTURE.md — Domain/view/input boundaries and honest limits of future async adapter replacement.
+- docs/DECISIONS.md — ADR-010/011: contract separation, structural vs factual verification, lifecycle vs publishing, mock compatibility and normalized schema direction.
+- docs/FEATURES.md and docs/PHASES.md — Mark preparation/design complete, not database/Admin/auth/notifications or server validation enforcement.
+- MEMORY.md — Current recovery, verification and readiness handoff.
+
+## Interrupted Work Retained / Completed
+
+- Read the entire interrupted diff and both untracked files before continuing. Found exactly lib/domain/recruitment.ts, lib/data/recruitments.ts, lib/data/recruitment-views.ts and lib/validation/recruitment.ts; no syntactically unfinished file.
+- Retained all four files. Completed the domain's optional RecruitmentDetail grouping and content/verified version metadata; no public consumer rewrite or fixture conversion.
+- Completed schema/architecture/decision/feature/phase documentation. No reset/restore/stash, package installation, backend integration, commit or push.
 
 ## Checks Performed
 
-- Reviewed all interrupted diffs and the untracked Alerts page before editing; retained those seven files unchanged.
-- npx tsc --noEmit passed; git diff --check passed.
-- In-memory rendered-link audit passed: 21 application routes, 37 page renders, 49 unique internal hrefs; actual components and Next.js Link used, no source files created by the test.
-- Verified Job detail IDs 1–2, safe unsupported-ID fallback, Closing Soon IDs 3–5 non-linked, five non-linked Job Detail placeholders, and corrected homepage tool URLs.
-- All eight Answer Key and Syllabus entries remain visible; only Syllabus IDs 1–3 navigate. No Result/Admit Card/Answer Key detail hrefs were found.
-- npm run build passed outside the restricted sandbox (exit 0; 22/22 static pages generated, including /alerts). Compilation took 5.8 minutes and the build's TypeScript step took 3.3 minutes; no code/configuration workaround was used.
-- Final source search found no hash-placeholder navigation or Result/Admit Card/Answer Key detail URL references. No remaining known broken internal routes were found; UI-only workflows listed below remain unimplemented.
-- SHA-256 checks confirmed all seven interrupted files were preserved unchanged during continuation. No commit or push performed.
+- Focused runtime verification: PowerShell inline script piped to Node, using the already installed TypeScript transpileModule in memory and node:assert/strict. No test framework, dependency or test artifact installed/created.
+- 106 validation checks passed: minimal/full create and update inputs; missing fields/IDs; invalid counts/dates/leap days/URLs/fees/currency/statuses; duplicates in every nested ID collection; malformed objects/collections; missing post/stage/source references; inverted ages; document/FAQ/salary requirements; whitespace handling and nonmutation; workflow/audit field rejection. AI-extracted input never acquired verified/published state.
+- 36 selector comparisons against HEAD passed using deep equality: listings, eligibility views, seven latest-list limits, and lookup/detail/detail-availability for IDs 1–8 plus unknown ID. Only 1–2 retain supported details. Git supplied the HEAD source through a read-only shell command because Node spawning Git was denied in the sandbox; the successful rerun completed with exit 0.
+- npx tsc --noEmit passed (exit 0) after continuation. git diff --check passed.
+- npm run build passed outside the restricted sandbox (exit 0; 22/22 static pages generated). Compilation took 5.6 minutes and the build's TypeScript step took 3.1 minutes; no source/configuration workaround, deleted cache, dependency change or interrupted build was needed. Existing routes, including dynamic Jobs/Syllabus detail routes, remain unchanged.
+- No app/public route files, package manifests/lockfile, Next/TS configuration or NEXT_TASK.md changed. No new any/suppression/framework/backend imports in the new domain/validation/view contracts.
+
+## Previous Checkpoint: Frontend Navigation Integrity — 8c2b8db
+
+- Completed informational /alerts, corrected tool routes, disabled placeholder navigation and preserved supported-only job/syllabus detail links. No real notifications/authentication were implemented.
+- Prior checkpoint verification passed TypeScript, production build (22/22 static pages), whitespace checks and rendered-link audit (21 application routes, 37 renders, 49 unique internal hrefs). These are historical results, not substitutes for this batch's checks.
 
 ## Previous Checkpoint: Compile/Build Recovery — Codex
 
@@ -50,16 +58,21 @@ Codex
 - Authentication is not implemented (Login/Register are UI only)
 - Database is not connected; recruitment and exam data remains mock/hardcoded
 - No real notification system exists
-- Existing search/filter/sort controls, query-parameter job filtering, Save/Track/Applied buttons, and mock login/register/contact workflows remain nonfunctional; not implemented by this navigation-only batch
+- Existing search/filter/sort controls, query-parameter job filtering, Save/Track/Applied buttons, and mock login/register/contact workflows remain nonfunctional; not implemented by this preparation batch
 - MobileHome and Eligibility Checker use the canonical recruitment boundary; desktop Closing Soon retains local presentation metadata but shares canonical detail-availability gating
 - RRB NTPC legacy eligibility data is temporarily excluded because no canonical recruitment fixture exists
 - Results, Admit Card, and Answer Key detail routes remain deferred pending approved data/product behavior; no fake routes or government facts were added
 - /alerts is informational only. Personalized alerts, subscriptions, preferences, authentication, database, and Admin functionality remain unimplemented
 - No verified official MyResult Telegram/WhatsApp URL is available; the contact page's existing Telegram handle is not verified and was not converted into a link
+- Existing fixture detail vacancy breakdowns do not reconcile with their headline totals; this mock factual debt was preserved, not silently corrected or treated as real production seed data.
+- Legacy detail views still depend on complete fixture shapes, label-based dates and a hardcoded display status. The future adapter must define formatting and missing-detail availability instead of applying these assumptions to incomplete real records.
+- Synchronous mock imports in client components need server-loading/prop integration for real data. Stable DTO contracts reduce UI churn but do not implement this bridge.
+- Structural validation is not factual verification, authorization, FK existence/ownership or publication enforcement. Future foundation work needs actual migrations, RLS/roles, transactions/version invalidation, UUID/legacy URL mapping, numeric-limit alignment, payload limits and verified official content.
+- No Supabase client/configuration, environment files, migrations, API routes, Admin/auth or notification backend were added. Sources, review workflow and user-side entities are design/contracts only.
 
 ## Current Work
 
-Frontend navigation cleanup and verification complete; awaiting owner review before commit. Task 3D and the existing compile fixes remain intact; no backend/data migration performed.
+Backend readiness implementation/documentation and verification are complete. Ready for owner review and a separately approved Supabase foundation task; Supabase is NOT implemented. Await approval before committing or starting that next task. Previous route-integrity work remains untouched. No commit or push performed.
 
 ## Next Recommended Task
 

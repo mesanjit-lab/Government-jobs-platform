@@ -1,6 +1,6 @@
 # FEATURES.md — Master Feature Status
 
-Last updated: September 2026
+Last updated: October 2026
 
 Legend:
 [x] Complete — implemented and verified
@@ -46,13 +46,15 @@ Legend:
 
 ## Data & Database
 
+[x] DB-independent recruitment domain contracts and separate legacy public view DTOs
+[x] Dependency-free recruitment Admin input structural validation — standalone only; not connected to UI/API/persistence
+[x] Recruitment schema reconciliation — design only; lifecycle, publication, verification/provenance and future user entities documented
+[x] Shared mock recruitment read boundary — public fixture/selector compatibility retained
 [ ] Supabase project setup
-[ ] Jobs table
-[ ] Results table
-[ ] Admit Cards table
-[ ] Answer Keys table
+[ ] Normalized organizations/recruitments and owned content tables + RLS/migrations
+[ ] Result/Admit Card/Answer Key lifecycle update persistence (attached to Recruitment)
 [ ] Syllabus table
-[ ] Exam Calendar table
+[ ] Database-backed Exam Calendar date projection
 [ ] Real data in homepage
 [ ] Real data in Jobs page
 [ ] Real data in Results page
@@ -114,7 +116,7 @@ Legend:
 [~] Basic security
 [ ] Supabase Row Level Security
 [ ] API route protection
-[ ] Input validation
+[~] Input validation — recruitment content contract implemented; server enforcement and other workflows not implemented
 [ ] Rate limiting
 
 ---

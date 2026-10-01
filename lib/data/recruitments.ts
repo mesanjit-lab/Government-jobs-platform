@@ -1,9 +1,9 @@
-import type { Recruitment } from '../domain/recruitment'
+import type { RecruitmentListView } from './recruitment-views'
 
 // MOCK DATA — replace with database adapter
 // Fixture data is owned by this module. Consumers must not mutate returned records;
 // future Supabase reads will return request-scoped data.
-const recruitments: readonly Recruitment[] = [
+const recruitments: readonly RecruitmentListView[] = [
   { id: '1', slug: 'ssc-chsl-2024', title: 'SSC CHSL 2024', organization: { name: 'Staff Selection Commission', shortName: 'SSC' }, vacancies: '3712', qualification: '12th Pass', lastDate: '15 Jun 2024', status: 'New', category: 'Central Govt', state: 'All India', detail: {
     shortTitle: 'SSC CHSL', advertisementNo: 'SSC/CHSL/2024', description: 'Combined Higher Secondary Level Examination 2024', publishedAt: '01 Jun 2024', updatedAt: '06 Sep 2026', eligibility: { qualification: '12th Pass', minimumAge: 18, maximumAge: 27 },
     importantDates: [{ label: 'Application Start Date', value: '01 Jun 2024' }, { label: 'Last Date to Apply', value: '15 Jun 2024' }, { label: 'Fee Payment Last Date', value: '16 Jun 2024' }, { label: 'Correction Last Date', value: '17 Jun 2024' }, { label: 'Exam Date', value: 'To Be Announced' }, { label: 'Admit Card Date', value: 'To Be Announced' }, { label: 'Result Date', value: 'To Be Announced' }],
@@ -18,10 +18,10 @@ const recruitments: readonly Recruitment[] = [
   { id: '8', slug: 'rrb-alp-2024', title: 'RRB ALP 2024', organization: { name: 'Railway Recruitment Board' }, vacancies: '5696', qualification: '10th Pass', lastDate: '30 Jul 2024', status: 'New', category: 'Railway', state: 'All India' },
 ]
 
-export function getRecruitments(): readonly Recruitment[] { return recruitments }
-export function getRecruitmentById(id: string): Recruitment | undefined { return recruitments.find((recruitment) => recruitment.id === id) }
+export function getRecruitments(): readonly RecruitmentListView[] { return recruitments }
+export function getRecruitmentById(id: string): RecruitmentListView | undefined { return recruitments.find((recruitment) => recruitment.id === id) }
 export function hasRecruitmentDetail(id: string): boolean { return Boolean(getRecruitmentById(id)?.detail) }
-export function getLatestRecruitments(limit = 5): readonly Recruitment[] { return recruitments.slice(0, limit) }
+export function getLatestRecruitments(limit = 5): readonly RecruitmentListView[] { return recruitments.slice(0, limit) }
 
 export interface EligibilityFee { general: number; obc: number; sc: number; st: number; female: number }
 export interface EligibilityRuleFixture { recruitmentId: string; minAge: number; maxAge: number; qualification: string; category: string; state: string; fee: EligibilityFee }
@@ -39,7 +39,7 @@ const eligibilityRules: readonly EligibilityRuleFixture[] = [
 export function getRecruitmentsForEligibility(): readonly EligibilityRecruitment[] { return eligibilityRules.map((rule) => { const recruitment = getRecruitmentById(rule.recruitmentId); if (!recruitment) throw new Error(`Missing recruitment fixture: ${rule.recruitmentId}`); return { id: recruitment.id, title: recruitment.title, organization: recruitment.organization.name, vacancies: recruitment.vacancies, lastDate: recruitment.lastDate, ...rule } }) }
 
 export interface RecruitmentDetailView {
-  id: string; slug: string; title: string; shortTitle: string; organization: string; advertisementNo: string; description: string; publishedAt: string; updatedAt: string; status: string; totalVacancies: number; applicationStart: string; applicationEnd: string; feeLastDate: string; correctionDate: string; examDate: string; admitCardDate: string; resultDate: string; qualification: string; minAge: number; maxAge: number; location: string; applyUrl: string; notificationUrl: string; officialUrl: string; fee: { category: string; amount: string }[]; vacancyDetails: NonNullable<Recruitment['detail']>['vacancy']['categoryWise']; selectionProcess: string[]; examPattern: NonNullable<Recruitment['detail']>['examPattern']; documents: string[]; howToApply: string[]; faq: { q: string; a: string }[]; relatedJobs: { id: string; title: string; org: string; vacancies: string; qualification: string; lastDate: string }[]
+  id: string; slug: string; title: string; shortTitle: string; organization: string; advertisementNo: string; description: string; publishedAt: string; updatedAt: string; status: string; totalVacancies: number; applicationStart: string; applicationEnd: string; feeLastDate: string; correctionDate: string; examDate: string; admitCardDate: string; resultDate: string; qualification: string; minAge: number; maxAge: number; location: string; applyUrl: string; notificationUrl: string; officialUrl: string; fee: { category: string; amount: string }[]; vacancyDetails: NonNullable<RecruitmentListView['detail']>['vacancy']['categoryWise']; selectionProcess: string[]; examPattern: NonNullable<RecruitmentListView['detail']>['examPattern']; documents: string[]; howToApply: string[]; faq: { q: string; a: string }[]; relatedJobs: { id: string; title: string; org: string; vacancies: string; qualification: string; lastDate: string }[]
 }
 
 export function getRecruitmentDetailView(id: string): RecruitmentDetailView | undefined {

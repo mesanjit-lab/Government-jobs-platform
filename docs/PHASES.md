@@ -1,6 +1,6 @@
 # PHASES.md — Development Roadmap
 
-Last updated: September 2026
+Last updated: October 2026
 
 ---
 
@@ -41,11 +41,11 @@ Last updated: September 2026
 ## Phase 3 — Database & Real Data 🔄 CURRENT
 
 - [ ] Supabase project setup
-- [ ] Database schema design
-- [ ] Jobs table + real data
-- [ ] Results table + real data
-- [ ] Admit Cards table + real data
-- [ ] Answer Keys table + real data
+- [x] Recruitment domain/view separation and standalone Admin input structural validation
+- [x] Logical recruitment schema design reconciled — design only; no migrations/database deployment
+- [ ] Foundation migrations, role/RLS rules and transactional publication enforcement
+- [ ] Organizations/recruitments + owned content tables + verified real data
+- [ ] Results/Admit Cards/Answer Keys as recruitment lifecycle updates + verified real data
 - [ ] Syllabus table + real data
 - [ ] Connect frontend to Supabase
 - [ ] Admin panel for data entry
@@ -93,6 +93,8 @@ Last updated: September 2026
 - [ ] Security audit
 - [ ] Custom domain
 - [ ] Production checklist
+
+Standalone recruitment structural validation exists from Phase 3 preparation; production server enforcement and other input contracts remain pending.
 
 ---
 
