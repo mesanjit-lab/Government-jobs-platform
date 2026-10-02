@@ -7,14 +7,13 @@ Last updated: October 2026
 ## Overview
 
 MyResult is a Next.js application using the App Router pattern.
-Currently frontend-only with mock data.
-Supabase integration is planned for Phase 3.
+Public pages remain frontend/mock-backed. Phase 3 now includes an unused local Supabase foundation (clients, SQL and verification scripts); no remote project is connected and no migration has been executed.
 
 ---
 
 ## Frontend
 
-Framework: Next.js 16.3.4
+Framework: Next.js 16.3.8 (approved security patch)
 Language: TypeScript
 Styling: Tailwind CSS
 Icons: lucide-react
@@ -61,7 +60,7 @@ NEVER in frontend:
 
 ALLOWED in frontend:
 - NEXT_PUBLIC_SUPABASE_URL
-- NEXT_PUBLIC_SUPABASE_ANON_KEY (with RLS enabled)
+- NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (with RLS enabled)
 
 Admin operations must go through:
 - Next.js API Routes (server-side only)
@@ -114,3 +113,15 @@ Future Admin content input → structural validation → authorization/DB constr
 Keep `getRecruitments`, `getRecruitmentById`, `getLatestRecruitments`, `getRecruitmentDetailView`, `hasRecruitmentDetail` and `getRecruitmentsForEligibility` as the compatibility surface. The current synchronous client imports cannot simply become async Supabase calls: integration must introduce server loading and pass safe projections to client components while preserving their presentation. No privileged client belongs in a browser bundle.
 
 Before real reads, define normalized-to-view formatting, missing-detail availability, legacy numeric ID/UUID routing, cache invalidation and request-scoped loading. The current detail selector still assumes legacy complete fixtures (ages/category breakdown and label-based dates); it is not a validator for future incomplete domain records. No backend adapter has been added in this preparation batch.
+
+## Supabase local foundation — Phase 1
+
+- Installed @supabase/supabase-js 2.117.2 and @supabase/ssr 0.12.7 only. SDK requires Node >=22; the operator scripts use native TypeScript stripping (Node >=22.18, verified with 24.19.0).
+- `lib/supabase/env.ts` lazily validates the two explicit public environment names. No service credentials, legacy-JWT fallback or build-time requirement for local credentials. `.env.example` is blank; `.env.local` stays ignored.
+- `lib/supabase/client.ts` is client-only and uses createBrowserClient with publishable credentials. `server.ts` is server-only, creates a fresh request-scoped createServerClient and reads Next's asynchronous cookie store.
+- SSR 0.12.7 cookie writes also require response cache headers. A future authorized Route Handler must pass a writer applying BOTH arguments of setAll. Without that adapter, writes fail explicitly rather than silently dropping session changes/cache headers. This is not working authentication; no Proxy, auth UI wiring or refresh workflow is installed.
+- No public component imports these clients. There is no repository/read adapter or generated database type claim yet. Generate types only after applying/verifying the schema; public column grants require explicit SELECT lists, not SELECT *.
+- `supabase/migrations/20261002000100_recruitment_foundation.sql` defines the 17 Core V1 tables, version/review guards and fail-closed RLS. Static review only, NOT database-executed. See DATABASE.md and SUPABASE.md for security and operator gates.
+- `scripts/verify-supabase.mjs` is a Node-only, explicit-opt-in HEAD read check; no API/debug route. `scripts/check-supabase-foundation.mjs` tests with synthetic config and mocked networking, plus static SQL structure and fixture parity.
+
+Admin, staff authorization services, authentication, notification delivery, remote persistence and public-page integration remain NOT IMPLEMENTED.

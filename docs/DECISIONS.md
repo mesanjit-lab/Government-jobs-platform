@@ -105,3 +105,14 @@ Decision: Lifecycle, publicationState and verificationState are independent. Pre
 Decision: Reconcile DATABASE.md around organizations, recruitments and owned normalized content, with source/review evidence and independent workflow on future lifecycle updates. Do not create separate competing jobs/results/admit-card recruitment identities. Defer user tracking, delivery infrastructure and optional revision snapshots.
 Reason: Draft → Preview → Verify → Publish must not accidentally publish unverified automation output or leak child/update drafts beneath a public parent. Unknown factual data stays absent.
 Status: Domain contracts and schema design only. No migrations, roles/RLS, persistence, verification service, Admin CMS or notification infrastructure implemented.
+
+---
+
+## ADR-012 — Fail-closed local Supabase foundation, without public integration
+
+Date: October 2026
+Decision: Use modern publishable credentials only, lazy client factories and a server-only request cookie boundary. Defer Proxy/auth until a response adapter can apply both SSR cookie writes and cache headers. No service-role client, remote connection or public debug endpoint.
+Decision: Implement Core V1 as a versioned transactional local migration. Grant reader roles only selected public columns with current-version/latest-review publication checks; internal evidence/memberships remain private. No reader write policies, staff grants or mutation RPC. Child/provenance edits invalidate verification; published history is archived, not deleted.
+Reason: A public parent must not expose draft updates, private reviewer evidence or unreviewed edits. SDK installation and SQL text do not imply a connected/verified production database. Existing mock selectors/pages remain unchanged until an explicitly approved adapter/identity migration.
+Limits: SQL reviewed statically only; actual execution, RLS adversarial tests and concurrency/transaction testing require later approved setup. Admin authorization, human factual verification service, auth and notifications remain unimplemented. The Next.js critical finding was resolved by the approved 16.3.8 patch; remaining dev-only brace-expansion advisories require separate remediation approval. No automatic audit fix.
+Status: Local foundation implemented; remote/database execution NOT VERIFIED. Supersedes ADR-011's historical statement that no migration exists, not its lifecycle/publication/verification separation.

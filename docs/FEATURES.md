@@ -51,7 +51,8 @@ Legend:
 [x] Recruitment schema reconciliation — design only; lifecycle, publication, verification/provenance and future user entities documented
 [x] Shared mock recruitment read boundary — public fixture/selector compatibility retained
 [ ] Supabase project setup
-[ ] Normalized organizations/recruitments and owned content tables + RLS/migrations
+[x] Local Supabase packages, lazy public env contract, browser/request-scoped server factories and operator read-check script
+[~] Normalized organizations/recruitments and owned content tables + RLS/migrations — local SQL/static review complete; database execution NOT VERIFIED
 [ ] Result/Admit Card/Answer Key lifecycle update persistence (attached to Recruitment)
 [ ] Syllabus table
 [ ] Database-backed Exam Calendar date projection
@@ -114,7 +115,7 @@ Legend:
 ## Security
 
 [~] Basic security
-[ ] Supabase Row Level Security
+[~] Supabase Row Level Security — fail-closed local policies for all 17 Core V1 tables; database execution/security tests pending
 [ ] API route protection
 [~] Input validation — recruitment content contract implemented; server enforcement and other workflows not implemented
 [ ] Rate limiting

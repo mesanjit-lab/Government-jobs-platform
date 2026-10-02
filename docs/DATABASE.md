@@ -1,10 +1,10 @@
-# DATABASE.md — Planned Recruitment Schema
+# DATABASE.md — Recruitment Schema and Local Foundation
 
 Last updated: October 2026
 
 ## Status and scope
 
-DESIGN ONLY. No database, Supabase client/configuration, migrations, authentication, Admin UI or notification infrastructure has been implemented.
+LOCAL FOUNDATION IMPLEMENTED; DATABASE EXECUTION NOT VERIFIED. The versioned migration in `supabase/migrations/20261002000100_recruitment_foundation.sql` implements Core V1 locally, with Supabase public clients and a safe operator read check. No remote project is connected, no migration has run, and no authentication, Admin UI or notification infrastructure is implemented. Static review is not an executed database/RLS test.
 
 This replaces the old flat `jobs` table plan. Recruitment is the canonical identity; results, admit cards, answer keys and corrections are lifecycle updates, not independent copies of a recruitment. Current recruitment fixtures live behind `lib/data/recruitments.ts`; other feature fixtures still exist in components. Do not import mock fixtures as verified production records.
 
@@ -20,7 +20,7 @@ This replaces the old flat `jobs` table plan. Recruitment is the canonical ident
 - Plain-text descriptions, salary/pay-scale wording, category/state labels and ordered application instructions do not need separate taxonomy tables. Text is rendered escaped; no arbitrary HTML execution.
 - Most detail collections are optional. Absence means unknown/not recorded, not that a requirement does not exist. Do not force fixtures into the new model by inventing organization IDs, exact dates or missing facts.
 
-## Core V1 content entities (proposed, not created)
+## Core V1 content entities (defined in local migration; not deployed)
 
 Every entity with an `id` below has a UUID PK. Unless explicitly stated otherwise, content tables have server-managed `created_at` and `updated_at`. Recruitment-owned child rows have a required `recruitment_id` FK and an ordered `position` where displayed as a list. They inherit the parent's visibility; they cannot publish themselves.
 
@@ -49,7 +49,7 @@ Ordering must be persisted by the adapter, not inferred from UUIDs or timestamps
 - `editor_memberships`: `user_id` FK → auth.users plus role (editor / verifier / publisher / administrator), composite PK (user_id, role), created_at and granted_by. Only trusted administrators may grant roles; never trust a writable profile field or client-supplied role.
 - `recruitment_reviews`: id PK, recruitment_id FK, optional update_id FK belonging to that recruitment, content_version, decision (verified / rejected), reviewer_id → auth.users, reviewed_at, verification_notes and an immutable evidence snapshot (source IDs, URLs and document hashes where available). This is an internal, append-only audit record, not a new public recruitment identity.
 - Evidence snapshots are deliberately limited JSONB rather than a generalized provenance framework. The future transaction must check that referenced sources belong to the reviewed recruitment; snapshots preserve what was checked even if source rows subsequently change.
-- These are schema proposals only. Neither staff authentication nor a verification service exists today.
+- These tables and structural safeguards are defined locally. Neither staff authentication nor an authorized verification service exists today; no memberships are seeded and no public/editor writes are granted.
 
 ## Lifecycle, publication and verification are separate
 
@@ -69,7 +69,7 @@ Verification state:
 
 The human workflow is Draft → Preview → Verify → Publish. Preview is a read-only action, not another stored status. A verified draft is represented by verification_state=verified while publication_state remains draft or in_review. No single overloaded status combines these concepts.
 
-Proposed workflow columns on recruitments (and independently on updates):
+Workflow columns in the local migration on recruitments (and independently on updates):
 
 - publication_state defaults draft; verification_state defaults unverified.
 - content_version starts at 1; every content/child/provenance edit increments it transactionally.
@@ -80,7 +80,7 @@ Proposed workflow columns on recruitments (and independently on updates):
 - Any material edit, including a child row or source edit, invalidates verification. Minimum V1 strategy: withdraw the aggregate to draft/unverified until reverified and republished. Editing a published live row in place without invalidation is forbidden. Published-revision snapshots that keep the previous version live are a later enhancement.
 - Use optimistic version checking and one transaction for content/children/workflow changes to prevent lost edits and stale verification.
 
-## Ownership, integrity, RLS and indexes (future implementation)
+## Ownership, integrity, RLS and indexes
 
 - Organizations/recruitments and their children are platform-owned editorial content, not owned by a submitting public user.
 - Enable RLS on ALL tables. Anonymous/public readers see only published, non-archived records with current verification. Child policies must check the parent, including joins through posts for vacancy counts. Updates also require their own publication/verification checks.
@@ -123,4 +123,17 @@ Input validation trims text, validates identifiers/counts/calendar dates/URLs/fe
 
 Read selectors currently remain synchronous and mock-backed. Their display DTOs and supported detail IDs are unchanged. A future server-only adapter must map normalized domain data to these DTOs, explicitly handle incomplete details, and load safe projections for client components. Switching synchronous imports to request-scoped server loading is an integration step; this batch does not pretend an async Supabase client is a drop-in implementation.
 
-The next foundation task must approve actual migrations, UUID/legacy URL mapping, RLS/role policies, transactional publication rules, database numeric limits, DTO mapping and server/client loading. Review real official data separately; mocks are not a production seed. No migrations, environment files or Supabase setup are included here.
+## Local migration implementation and execution limits
+
+- One transactional migration creates 17 tables in FK order; no seed records, destructive DDL or publication RPC. All 17 enable RLS. All PUBLIC/anon/authenticated table privileges are revoked before granting safe SELECT columns on 14 public-facing tables. Sources, reviews and staff memberships have no public grants/policies.
+- Public parent reads require published, not archived, a stable slug, active organization, verification of the current version, a non-future publication timestamp and a matching latest human review. Updates independently meet these conditions AND require a public parent. Child policies inherit the parent (vacancy categories join through posts).
+- Read-only SECURITY DEFINER predicates live in the non-exposed `private` schema, with fixed empty search_path and fully qualified tables. Only the two visibility predicates are executable by reader roles. The trusted migration owner bypasses RLS inside them to avoid policy recursion; do not change ownership to an untrusted role or expose `private` through the Data API.
+- Actor IDs, workflow metadata and internal source IDs/evidence are excluded from public column grants. Explicit public link/document URLs are content, not automatic provenance disclosure. SELECT * on restricted tables intentionally fails; future adapters need explicit projections.
+- Parent/update guards initialize drafts, protect identity/creation metadata, increment content versions and invalidate verification on material edits. Child edits lock/version the parent before changing data. Source edits also invalidate all independently reviewed updates; organization edits invalidate associated parents. A previously published aggregate cannot be hard-deleted; its publication-history timestamp is retained while withdrawn/archived.
+- Reviews are append-only, bound to a locked current target version, an auth.users reviewer FK and immutable matching source ID/URL/hash snapshots. Verification needs nonempty evidence. A subsequent rejection hides content through the public predicate. This records a trusted human assertion: SQL cannot prove a government URL/fact is authentic. No AI/extraction automation can publish through a public write path.
+- Same-parent composite FKs enforce post/stage/source/update ownership. Scalar guards cover trimmed text, URL shape, safe nonnegative counts, ordered positions, finite nonnegative marks, real date bounds, fee amount/currency pairing, required-document URL differences and minimum/maximum age ordering. Fee numeric(14,2) storage can round excess precision; a future privileged writer MUST run the existing full-input validator before persistence. Marks use unrestricted finite numeric; the future adapter must reject values outside its JS finite-number representation.
+- All FKs use restricted deletion. Draft cleanup/replacement requires explicit FK-aware child deletion in one authorized transaction; no cascade/retention shortcut is enabled. Future services must enforce roles, optimistic expected-version matching, payload limits, lock ordering/retries and transaction boundaries. Triggers do not implement an Admin service.
+- STATIC REVIEW performed: table/FK ordering, constraints/enums, policy/grant scope, fixed-search-path helpers, indexes, duplicate object names, trigger structure and absence of seeds/destructive statements. Offline text checks are NOT a PostgreSQL parser or execution proof.
+- DATABASE EXECUTION NOT VERIFIED: no Supabase CLI, PostgreSQL CLI or Docker installed; none added. Before trusting this schema, execute on an approved isolated database and test anonymous/authenticated visibility and denied writes, review/publication/edit invalidation, rollback and concurrent updates. Query plans/index tuning remain unmeasured.
+
+UUID/legacy URL mapping, generated DB types, role authorization, official data, DTO mapping and server/client loading remain future work. Mocks are not production seeds. See SUPABASE.md for manual setup gates; remote connection and migration execution need explicit approval.

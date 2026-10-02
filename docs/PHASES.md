@@ -42,8 +42,9 @@ Last updated: October 2026
 
 - [ ] Supabase project setup
 - [x] Recruitment domain/view separation and standalone Admin input structural validation
-- [x] Logical recruitment schema design reconciled — design only; no migrations/database deployment
-- [ ] Foundation migrations, role/RLS rules and transactional publication enforcement
+- [x] Logical recruitment schema design reconciled; local migration now defined, not deployed
+- [x] Supabase Foundation Phase 1 local clients/env/read-check mechanism and approved package installation
+- [~] Foundation migration/RLS/version guards — static review complete; database execution NOT VERIFIED; staff authorization service deferred
 - [ ] Organizations/recruitments + owned content tables + verified real data
 - [ ] Results/Admit Cards/Answer Keys as recruitment lifecycle updates + verified real data
 - [ ] Syllabus table + real data
