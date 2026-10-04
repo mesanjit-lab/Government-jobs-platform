@@ -40,11 +40,12 @@ Last updated: October 2026
 
 ## Phase 3 — Database & Real Data 🔄 CURRENT
 
-- [ ] Supabase project setup
+- [x] Separate NEW MyResult Supabase project setup + ignored local publishable configuration + safe connectivity verification
 - [x] Recruitment domain/view separation and standalone Admin input structural validation
-- [x] Logical recruitment schema design reconciled; local migration now defined, not deployed
+- [x] Logical recruitment schema design reconciled; foundation migration executed once successfully on the NEW project
 - [x] Supabase Foundation Phase 1 local clients/env/read-check mechanism and approved package installation
-- [~] Foundation migration/RLS/version guards — static review complete; database execution NOT VERIFIED; staff authorization service deferred
+- [x] Foundation database/RLS runtime checkpoint — 17 tables deployed; owner-reported rollback-only SQL-role suite PASS, 270 assertions, fixtures rolled back and tables empty afterward
+- [ ] HTTP/JWT/auth.uid reader behavior verification — SQL-role testing is not identity/HTTP coverage
 - [ ] Organizations/recruitments + owned content tables + verified real data
 - [ ] Results/Admit Cards/Answer Keys as recruitment lifecycle updates + verified real data
 - [ ] Syllabus table + real data
@@ -55,7 +56,7 @@ Last updated: October 2026
 
 ## Phase 4 — Authentication
 
-- [ ] Supabase Auth setup
+- [ ] Application Supabase Auth integration — dedicated normal test account exists, not a working application auth flow
 - [ ] Login — functional
 - [ ] Register — functional
 - [ ] User dashboard
@@ -88,7 +89,7 @@ Last updated: October 2026
 
 ## Phase 7 — Security & Production
 
-- [ ] Row Level Security
+- [~] Row Level Security — foundation SQL-role checkpoint complete; HTTP/JWT, future user/staff policies and broader security coverage pending
 - [ ] API protection
 - [ ] Input validation
 - [ ] Security audit
@@ -96,6 +97,8 @@ Last updated: October 2026
 - [ ] Production checklist
 
 Standalone recruitment structural validation exists from Phase 3 preparation; production server enforcement and other input contracts remain pending.
+
+The 2026-10-04 runtime checkpoint is based on owner-supplied Dashboard results. No service-role usage, Auth mutations or DDL occurred in the V2 suite. Known review-ordering and concurrent lock-order risks remain. Do not rerun the foundation migration or V2 suite; never touch the old AI Test Platform project in normal MyResult work. Phase 3 as a whole remains incomplete: public pages are still mock-backed, verified real content and a read adapter are absent, and Admin/authorization services are not implemented. See SUPABASE.md for counts and limitations; NEXT_TASK.md contains one proposed planning task, not implementation approval.
 
 ---
 

@@ -1,12 +1,48 @@
-# Supabase Foundation Phase 1 — local operator handoff
+# Supabase Foundation — operator handoff
 
-Status: local clients, SQL and scripts implemented. Remote project NOT CONNECTED. Migration STATIC REVIEW performed; DATABASE EXECUTION NOT VERIFIED. Public pages remain mock-backed. Admin, authentication and notifications NOT IMPLEMENTED.
+Status as of 2026-10-04: separate NEW `myresult` Supabase project configured; safe publishable-key connectivity PASSED; foundation migration executed once successfully; 17 foundation tables deployed; controlled rollback-only SQL-role RLS verification PASSED 270 assertions. Remote execution/results were supplied by the owner; this documentation checkpoint did not rerun them. Public pages remain mock-backed. Application authentication, Admin, notifications and Supabase-backed public reads are NOT IMPLEMENTED.
+
+## Verified remote checkpoint and isolation boundary
+
+- Source checkpoint: `1e2720f feat: add Supabase foundation and patch Next.js`. The committed migration remains unchanged.
+- Local `.env.local` is configured for the NEW `myresult` project and ignored by Git. Record environment variable NAMES only; never document the URL, publishable key, tokens, passwords or other credentials. No environment file was read or changed in this documentation task.
+- The owner executed `supabase/migrations/20261002000100_recruitment_foundation.sql` once successfully through the Dashboard. All 17 foundation tables exist. DO NOT rerun the migration or the completed V2 suite.
+- Catalog preflight: PASS_WITH_FINDINGS; 17/17 tables with RLS, 14/14 intended SELECT policies, no unexpected/public write policies, privilege problems or private-table exposure; 16/16 triggers, 7/7 private functions and constraint metadata matched. No BLOCKER/HIGH findings. The two known MEDIUM findings remain: `KNOWN_EDITORIAL_LOCK_ORDER_RISK` and `KNOWN_REVIEW_ORDERING_RISK`.
+- Safe publishable connectivity passed. Earlier approved read-only API probes returned HTTP 200 for 14 approved public projections; restricted wildcard and private-table probes returned HTTP 401. These probes alone do not establish authenticated JWT or positive record-visibility behavior.
+- Corrected runtime scope `TEST_MYRESULT_RLS_V2`: result PASS, assertion_count 270. The harness-only UPDATE correction uses `reviewed_at` for `recruitment_reviews`, and `created_at` for the other 16 tables; no schema change was needed.
+
+| Runtime category | Passed assertions |
+| --- | ---: |
+| preconditions | 1 |
+| recruitment_visibility | 10 |
+| child_visibility | 44 |
+| column_projection | 28 |
+| private_reads | 6 |
+| write_grants | 34 |
+| unauthorized_writes | 102 |
+| update_visibility | 8 |
+| version_invalidation | 25 |
+| workflow_guards | 12 |
+| Total | 270 |
+
+- Reported safety flags: `fixture_mutations_already_rolled_back=true`, `foundation_tables_empty_after_rollback=true`, `existing_reviewer_account_unchanged=true`; `ddl_executed=false`, `auth_mutations=false`, `service_role_used=false`, `explicit_auth_user_row_queries=false`. No TEST fixtures or temporary editor membership remained after the successful rollback.
+- A dedicated normal test reviewer was created separately by the owner through Supabase Authentication with explicit approval. That account persists outside the test transaction and was not modified by the suite. Its existence is NOT application authentication or staff authorization implementation. Do not insert synthetic Auth users or automatically delete this account.
+- Normal MyResult work must never contact, inspect, modify or clean the old AI Test Platform Supabase project. Accidental MyResult objects there are a separately scoped future cleanup task, not authorization for this checkpoint.
+
+### Runtime limits and remaining security work
+
+- SQL roles `anon` and `authenticated` were tested, not HTTP/JWT/`auth.uid()` identity behavior.
+- Forbidden publication states were tested as rejected writes, not persisted invalid states.
+- Write-denial tests cover the current absence of editorial grants; they do not verify a future authorized staff writer.
+- One child UPDATE represents child invalidation; not every child mutation permutation or organization-edit path was runtime-tested by this suite.
+- Known review-ordering and concurrent lock-order risks remain; no concurrency/retry or query-plan coverage is claimed.
+- This is a controlled isolated foundation checkpoint, not production security clearance, official-data verification, or approval to switch public reads.
 
 ## Configuration and clients
 
 Only `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` are accepted. `.env.example` contains blank placeholders; `.env.local` remains ignored. Do not supply a service-role/secret key or legacy JWT. The config parser requires an HTTPS origin (HTTP allowed only for loopback) and a modern publishable-key prefix; it is format validation, not proof the key belongs to a project.
 
-No credentials are required to import the factories or build the existing mock site. Public values supplied to Next.js are build-time browser configuration; rebuild when changing them later. No unsafe fallback, hidden privileged client or real configuration was added.
+No credentials are required to import the factories or build the existing mock site. Public values supplied to Next.js are build-time browser configuration; rebuild when changing them later. Configuration now exists only in ignored local environment storage; no unsafe fallback, hidden privileged client or credentials were added to tracked files. Vercel environment configuration is not verified by this checkpoint.
 
 Browser factory: `lib/supabase/client.ts`, client-only, uses `createBrowserClient`.
 Server factory: `lib/supabase/server.ts`, server-only, new instance per request, awaits Next cookies. Reads use getAll. Cookie writes require an explicit future response writer applying BOTH cookies and the SSR package's cache headers; the default callback throws instead of pretending sessions were persisted. Auth Proxy/session refresh/UI are deferred because no auth workflow uses this foundation.
@@ -30,9 +66,9 @@ npm run build
 
 The offline script uses synthetic configuration and mocked fetches only. It checks env rejection/acceptance, read-only request shape and redaction, cookie factory wiring/request scoping, package version agreement, textual SQL safeguards, and 36 deep-equality selector comparisons with HEAD. It never loads .env.local or contacts a database. SQL text checks cannot replace a parser/execution test. No test framework/package was added.
 
-Observed post-security-update results on Next.js 16.3.8: 177 offline checks and 36 fixture comparisons PASSED; standalone TypeScript PASSED; production build PASSED (exit 0, 22/22 static pages, no .env.local); git diff --check PASSED. Compilation took 9.9 minutes and build TypeScript took 3.5 minutes; the single build was allowed to finish. The earlier Phase 1 operator command without configuration exited 1 with a clear missing-env message and no request. These results do not verify a real database connection or SQL execution.
+Historical post-security-update results on Next.js 16.3.8: 177 offline checks and 36 fixture comparisons PASSED; standalone TypeScript PASSED; production build PASSED (exit 0, 22/22 static pages, no .env.local); git diff --check PASSED. Compilation took 9.9 minutes and build TypeScript took 3.5 minutes; the single build was allowed to finish. The earlier Phase 1 operator command without configuration exited 1 with a clear missing-env message and no request. Those local checks do not establish remote execution; the later owner-supplied remote checkpoint above records separate connectivity/catalog/runtime evidence.
 
-## Read connectivity mechanism (DO NOT run against a project until approved)
+## Read connectivity mechanism (future reruns require explicit approval)
 
 ```powershell
 npm run verify:supabase
@@ -40,7 +76,7 @@ npm run verify:supabase
 npm run verify:supabase -- --allow-network
 ```
 
-The first command rejects missing/invalid env or, with valid config, refuses network without the flag. The approved opt-in sends a timeout-limited HEAD SELECT of only recruitments.id, with limit 1, using publishable credentials and no persisted/refreshed auth session. It prints no records, URL, key or raw error body and makes no writes. A successful response proves only endpoint/read reachability, NOT correct RLS, schema completeness or existence of public data. Without real credentials no connection success is claimed. No debug route exists.
+The first command rejects missing/invalid env or, with valid config, refuses network without the flag. The approved opt-in sends a timeout-limited HEAD SELECT of only recruitments.id, with limit 1, using publishable credentials and no persisted/refreshed auth session. It prints no records, URL, key or raw error body and makes no writes. A successful response proves only endpoint/read reachability, NOT correct RLS, schema completeness or existence of public data. Connectivity has passed for the new project; no request is authorized or performed by this documentation task. No debug route exists.
 
 ## Migration and security boundary
 
@@ -54,17 +90,16 @@ Private SECURITY DEFINER read predicates use an empty search_path and fully qual
 
 Publishing structurally requires current version-bound human review/evidence, active organization and stable public identity. Editing parent/child/source content withdraws stale verification. Independently published updates also require a public parent. SQL cannot establish factual authenticity: a later authorized editorial service and real human review remain mandatory. Application role checks, optimistic expected-version matching and safe transaction/lock ordering are still future work, not implied by this migration.
 
-No Supabase/PostgreSQL/Docker CLI is available or installed. Static review covered order, FKs, enum/check alignment, RLS/policy targets, grants, indexes, names, function search paths and destructive statements. Actual SQL syntax/constraint/trigger behavior and RLS are NOT database-tested.
+No CLI installation or linking was needed for the owner-run Dashboard migration and rollback-only verification. Static review covered order, FKs, enum/check alignment, RLS/policy targets, grants, indexes, names, function search paths and destructive statements. Runtime evidence now covers the 270 cases above, not every possible constraint, trigger path, identity or concurrency scenario.
 
-## Manual gates after separate approval
+## Remaining gates after separate approval
 
-1. Resolve/review the existing dependency advisories below before production exposure.
-2. Approve an isolated Supabase test project or local database/tooling separately. Do not point unexecuted SQL at an existing production database. Check existing objects/roles, migration ownership and exposed-schema configuration first.
-3. Apply the versioned migration using approved tooling; record success/failure and retain migration history. No CLI setup or remote migration was performed here.
-4. Execute rollback-scoped tests using explicitly synthetic records and a test auth identity: defaults; cross-parent FK failures; scalar constraints; missing evidence; current/stale/rejected reviews; publication; edits to each child/source/organization; independent update visibility; archive/delete protection; anonymous and authenticated reads and INSERT/UPDATE/DELETE denial; denial of private/audit columns; concurrency and rollback behavior. Test service-role/owner separately because they bypass RLS.
-5. Review query plans/indexes and deadlock/retry behavior. Generate database types only from the verified schema. Review numeric/decimal mapping and unknown-value preservation before implementing a writer.
-6. Supply the two PUBLIC values locally without committing them; only then explicitly opt in to the read check. Never log credentials or place privileged keys in the browser.
-7. Separately approve staff authorization/publication service, UUID/legacy routing, DTO adapter and server-to-client loading. Do not seed the existing recruitment mocks as verified government data.
+1. Prepare a read-only HTTP/JWT reader-access verification plan for the NEW project. This is the single proposed next task, awaiting approval in NEXT_TASK.md; do not implement auth or run requests in this checkpoint.
+2. Any future execution needs its own approval, safe normal-user token handling and redacted outputs. Empty tables/read-only requests cannot prove positive public-record visibility or every identity-dependent policy; record those limits rather than seed data or rerun V2.
+3. Assess the known review-ordering/lock-order risks, missing mutation permutations and concurrency/retry scenarios before introducing an authorized writer. No service-role usage is authorized by this handoff.
+4. Review query plans/indexes; generate database types and define numeric/decimal mapping, missing-detail behavior and legacy ID/UUID routing before a read adapter. These are later separately approved tasks.
+5. Separately approve staff authorization/publication services, safe DTO projections and server-to-client loading. Keep current public pages mock-backed until their explicit integration task; mocks are not verified production seeds.
+6. Resolve/review the existing development-tooling advisory below before production exposure. No automatic audit fix or dependency change is part of this checkpoint.
 
 ## Dependency audit — Next.js resolved; development tooling concern remains
 
@@ -77,4 +112,4 @@ Before the security update, `npm audit --json` reported TWO affected packages: o
 
 Advisories: [brace CPU DoS](https://github.com/advisories/GHSA-q2hr-2g5m-vwhr), [brace nested recursion](https://github.com/advisories/GHSA-qhr7-859c-m2p7), [brace parsing recursion](https://github.com/advisories/GHSA-6j4f-fj2g-mc7p), [Next advisory](https://github.com/advisories/GHSA-vcvr-r3jv-pc5j). Next details above are from the actual npm audit response; the advisory web page could not be fetched during this review. Installation also reported the pre-existing unapproved unrs-resolver postinstall; no approve-scripts action was taken.
 
-A verified local source checkpoint can be reviewed separately from dependency remediation. Do not interpret a green build or safe-to-checkpoint assessment as production security clearance or database execution approval.
+A verified foundation checkpoint can be reviewed separately from dependency remediation. Neither a green build nor the bounded runtime PASS is comprehensive production security clearance. No migration rerun, V2 rerun, remote mutation or old-project cleanup is authorized by this handoff.

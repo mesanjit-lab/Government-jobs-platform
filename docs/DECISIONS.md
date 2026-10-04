@@ -47,7 +47,7 @@ Status: Implemented
 Date: September 2026
 Decision: Build complete UI with mock data before connecting database
 Reason: Faster UI iteration, database schema can be finalized based on UI needs
-Status: In Progress — database connection planned for Phase 3
+Status: Public application remains mock-backed. Separate database foundation is deployed/SQL-role tested; application read integration remains planned for Phase 3.
 
 ---
 
@@ -56,7 +56,7 @@ Status: In Progress — database connection planned for Phase 3
 Date: September 2026
 Decision: Use Supabase for PostgreSQL database and authentication
 Reason: Built-in Auth, Row Level Security, real-time capabilities, free tier
-Status: Planned — Phase 3
+Status: Supabase database foundation deployed and controlled SQL-role verified; application Auth integration remains planned.
 
 ---
 
@@ -104,15 +104,26 @@ Date: October 2026
 Decision: Lifecycle, publicationState and verificationState are independent. Preview is a read-only action. Verified content requires human official-source review tied to contentVersion; any content/child/source edit must invalidate it before republishing. AI extraction records origin but never implies verification.
 Decision: Reconcile DATABASE.md around organizations, recruitments and owned normalized content, with source/review evidence and independent workflow on future lifecycle updates. Do not create separate competing jobs/results/admit-card recruitment identities. Defer user tracking, delivery infrastructure and optional revision snapshots.
 Reason: Draft → Preview → Verify → Publish must not accidentally publish unverified automation output or leak child/update drafts beneath a public parent. Unknown factual data stays absent.
-Status: Domain contracts and schema design only. No migrations, roles/RLS, persistence, verification service, Admin CMS or notification infrastructure implemented.
+Historical status at the design checkpoint: domain contracts and schema design only. Migration/RLS deployment and controlled runtime verification are now recorded in ADR-012/013; verification services, Admin CMS and notifications remain unimplemented.
 
 ---
 
 ## ADR-012 — Fail-closed local Supabase foundation, without public integration
 
 Date: October 2026
-Decision: Use modern publishable credentials only, lazy client factories and a server-only request cookie boundary. Defer Proxy/auth until a response adapter can apply both SSR cookie writes and cache headers. No service-role client, remote connection or public debug endpoint.
+Decision: Use modern publishable credentials only, lazy client factories and a server-only request cookie boundary. Defer Proxy/auth until a response adapter can apply both SSR cookie writes and cache headers. No service-role client or public debug endpoint. Initial local-only scope is historical; isolated remote deployment/verification is recorded below and in ADR-013.
 Decision: Implement Core V1 as a versioned transactional local migration. Grant reader roles only selected public columns with current-version/latest-review publication checks; internal evidence/memberships remain private. No reader write policies, staff grants or mutation RPC. Child/provenance edits invalidate verification; published history is archived, not deleted.
 Reason: A public parent must not expose draft updates, private reviewer evidence or unreviewed edits. SDK installation and SQL text do not imply a connected/verified production database. Existing mock selectors/pages remain unchanged until an explicitly approved adapter/identity migration.
-Limits: SQL reviewed statically only; actual execution, RLS adversarial tests and concurrency/transaction testing require later approved setup. Admin authorization, human factual verification service, auth and notifications remain unimplemented. The Next.js critical finding was resolved by the approved 16.3.8 patch; remaining dev-only brace-expansion advisories require separate remediation approval. No automatic audit fix.
-Status: Local foundation implemented; remote/database execution NOT VERIFIED. Supersedes ADR-011's historical statement that no migration exists, not its lifecycle/publication/verification separation.
+Limits: Owner-reported isolated migration and 270 rollback-only SQL-role assertions are now complete, not comprehensive HTTP/JWT/auth.uid or concurrency coverage. Admin authorization, human factual verification service, application auth and notifications remain unimplemented. Known review-ordering and lock-order risks remain. The Next.js critical finding was resolved by the approved 16.3.8 patch; remaining dev-only brace-expansion advisories require separate remediation approval. No automatic audit fix.
+Status: Foundation implemented/deployed and controlled SQL-role checkpoint verified as of 2026-10-04; public application integration deferred. Supersedes ADR-011's historical statement that no migration exists, not its lifecycle/publication/verification separation.
+
+---
+
+## ADR-013 — Isolate MyResult database verification from existing projects
+
+Date: 2026-10-04
+Decision: Use only the separate NEW `myresult` Supabase project for MyResult foundation work. Never contact, inspect, modify or clean the old AI Test Platform project during normal development; cleanup of accidental MyResult objects there requires its own future scope and approval.
+Decision: Record the once-executed migration and corrected rollback-only TEST_MYRESULT_RLS_V2 PASS (270 assertions) as bounded foundation evidence, not approval for auth, staff writes or a production read cutover. No migration/V2 rerun is authorized by this checkpoint.
+Reason: Project isolation prevents unrelated application impact. SQL-role coverage proves the tested grants/policies/guards but does not establish HTTP/JWT/auth.uid identity behavior or solve known concurrency risks.
+Reviewer boundary: Use the separately approved normal Auth test account; do not directly insert synthetic auth.users records. It persists outside rollback and remained unchanged; TEST fixtures/editor membership rolled back. No service-role usage or Auth mutation occurred in the suite.
+Status: Separate project and controlled runtime checkpoint complete according to owner-supplied results. Public pages remain mock-backed; future verification/integration needs separate approval. Evidence, counts and limits are recorded in SUPABASE.md.

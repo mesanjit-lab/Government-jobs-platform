@@ -7,7 +7,7 @@ Last updated: October 2026
 ## Overview
 
 MyResult is a Next.js application using the App Router pattern.
-Public pages remain frontend/mock-backed. Phase 3 now includes an unused local Supabase foundation (clients, SQL and verification scripts); no remote project is connected and no migration has been executed.
+Public pages remain frontend/mock-backed. Phase 3 includes local Supabase clients/scripts plus a separately provisioned NEW `myresult` database. The owner reports the foundation migration executed once and a controlled rollback-only SQL-role suite PASSED 270 assertions, with foundation tables empty after rollback. The application does not yet read from this database; authentication/Admin and HTTP/JWT identity behavior remain unimplemented/unverified. See SUPABASE.md for evidence and limits.
 
 ---
 
@@ -42,10 +42,10 @@ Both layouts share:
 
 ---
 
-## Planned Backend (Phase 3)
+## Backend foundation and planned application integration (Phase 3)
 
-Database: Supabase (PostgreSQL)
-Auth: Supabase Auth
+Database: Supabase (PostgreSQL) — separate foundation deployed; public read adapter pending
+Auth: Supabase Auth — dedicated normal test account exists; application integration pending
 Storage: Supabase Storage (for images/PDFs if needed)
 API: Next.js API Routes + Supabase client
 
@@ -95,14 +95,14 @@ This is a full content snapshot, NOT a partial PATCH. Title/organization are req
 
 Structural validation checks fields, date validity (including leap years), non-negative counts/age bounds, decimal fee strings, HTTP(S) URLs, nested shapes/duplicate IDs and enum values. It rejects workflow/audit properties. It does not verify official facts, URL authenticity/reachability, database identity/ownership, permissions or government eligibility. Future server endpoints must apply this validation again and add authorization, request-size limits and persistence constraints.
 
-## Publication and verification (contracts/design only)
+## Publication and verification (contracts/database guards; services pending)
 
 Recruitment lifecycle is optional `upcoming | open | closed | in_progress | completed | cancelled`.
 Publication is `draft | in_review | published | archived`; verification is separately `unverified | in_review | verified | rejected`.
 
 Draft → Preview (read-only) → Human verification of official sources → Authorized publication.
 
-An AI-extracted source remains an unverified draft. Validation never supplies verified/published flags. Trusted services must bind human verification to a content version, invalidate it on edits, and enforce publication atomically. These services are NOT implemented. See DATABASE.md for proposed ownership, RLS, provenance and archive rules.
+An AI-extracted source remains an unverified draft. Validation never supplies verified/published flags. Deployed database guards bind verification to a current-version human review and invalidate it on edits; selected paths passed the controlled runtime suite. Authorized services and human factual verification remain NOT implemented. See DATABASE.md for ownership, RLS, provenance, archive rules and remaining concurrency/coverage limits.
 
 ## Data flow (planned — Phase 3, not implemented)
 
@@ -114,14 +114,14 @@ Keep `getRecruitments`, `getRecruitmentById`, `getLatestRecruitments`, `getRecru
 
 Before real reads, define normalized-to-view formatting, missing-detail availability, legacy numeric ID/UUID routing, cache invalidation and request-scoped loading. The current detail selector still assumes legacy complete fixtures (ages/category breakdown and label-based dates); it is not a validator for future incomplete domain records. No backend adapter has been added in this preparation batch.
 
-## Supabase local foundation — Phase 1
+## Supabase foundation — local implementation and isolated runtime checkpoint
 
 - Installed @supabase/supabase-js 2.117.2 and @supabase/ssr 0.12.7 only. SDK requires Node >=22; the operator scripts use native TypeScript stripping (Node >=22.18, verified with 24.19.0).
 - `lib/supabase/env.ts` lazily validates the two explicit public environment names. No service credentials, legacy-JWT fallback or build-time requirement for local credentials. `.env.example` is blank; `.env.local` stays ignored.
 - `lib/supabase/client.ts` is client-only and uses createBrowserClient with publishable credentials. `server.ts` is server-only, creates a fresh request-scoped createServerClient and reads Next's asynchronous cookie store.
 - SSR 0.12.7 cookie writes also require response cache headers. A future authorized Route Handler must pass a writer applying BOTH arguments of setAll. Without that adapter, writes fail explicitly rather than silently dropping session changes/cache headers. This is not working authentication; no Proxy, auth UI wiring or refresh workflow is installed.
 - No public component imports these clients. There is no repository/read adapter or generated database type claim yet. Generate types only after applying/verifying the schema; public column grants require explicit SELECT lists, not SELECT *.
-- `supabase/migrations/20261002000100_recruitment_foundation.sql` defines the 17 Core V1 tables, version/review guards and fail-closed RLS. Static review only, NOT database-executed. See DATABASE.md and SUPABASE.md for security and operator gates.
+- `supabase/migrations/20261002000100_recruitment_foundation.sql` defines the 17 Core V1 tables, version/review guards and fail-closed RLS; owner-run migration succeeded once on the NEW project. The corrected rollback-only V2 suite passed 270 SQL-role assertions, without Auth mutations, service-role usage or persistent fixtures. Do not rerun the migration or V2 suite. See DATABASE.md and SUPABASE.md for limits and remaining approval gates.
 - `scripts/verify-supabase.mjs` is a Node-only, explicit-opt-in HEAD read check; no API/debug route. `scripts/check-supabase-foundation.mjs` tests with synthetic config and mocked networking, plus static SQL structure and fixture parity.
 
-Admin, staff authorization services, authentication, notification delivery, remote persistence and public-page integration remain NOT IMPLEMENTED.
+Admin, staff authorization services, application authentication, notification delivery, application persistence/read adapters and public-page integration remain NOT IMPLEMENTED. HTTP/JWT/auth.uid verification is pending; known review-ordering and concurrent lock-order risks remain. Normal MyResult work must not contact, inspect, modify or clean the old AI Test Platform Supabase project.

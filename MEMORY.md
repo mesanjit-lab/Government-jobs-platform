@@ -1,18 +1,45 @@
 # MEMORY.md — Current Handoff State
 
-Last updated: October 2026
+Last updated: 2026-10-04
 
 ---
 
 ## Current Batch
 
-Supabase Foundation Phase 1 — continued the interrupted approved install from checkpoint 16600ca (master, synchronized with origin/master). Only package.json/package-lock.json were dirty on recovery; no foundation code existed. Retained those changes, installed no additional package/tool, and made no remote connection, reset/restore/stash, commit or push.
+Documentation/checkpoint only, following the owner's successful corrected V2 runtime RLS verification on the separate NEW `myresult` Supabase project. Starting source checkpoint: `1e2720f feat: add Supabase foundation and patch Next.js`, master synchronized with recorded origin/master, initially clean. No SQL, remote requests, database/Auth/configuration changes, implementation, dependencies, commit or push in this task.
 
 ## Last Agent
 
 Codex
 
 ## Files Changed
+
+- MEMORY.md — current evidence, history and next-step/isolation constraints.
+- docs/SUPABASE.md — deployed foundation, complete runtime counts/safety flags and explicit limits.
+- docs/PHASES.md / docs/FEATURES.md — infrastructure checkpoint complete; application integration/auth/Admin and HTTP/JWT coverage remain incomplete.
+- docs/DATABASE.md / docs/ARCHITECTURE.md — remove stale undeployed/unconnected claims without claiming a working public adapter.
+- docs/DECISIONS.md — reconcile prior statuses and ADR-013 for separate-project isolation/bounded verification.
+- NEXT_TASK.md — replace stale broad setup/cutover outline with one proposed read-only HTTP/JWT verification planning task; awaiting approval, not started.
+
+## Current Verified Foundation Checkpoint
+
+- Evidence basis: owner-supplied Dashboard execution/preflight/runtime results and previously approved safe connectivity checks. Remote checks are NOT rerun by this documentation task.
+- NEW separate `myresult` project exists. Ignored local `.env.local` is configured with NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY. Never print/document values, keys, passwords or JWTs; do not modify/commit the environment file.
+- Foundation migration executed once successfully; all 17 tables exist and RLS is enabled. Catalog preflight PASS_WITH_FINDINGS: 14/14 SELECT policies, no unexpected/public write policies, privilege/exposure problems or constraint metadata mismatches; 16/16 triggers and 7/7 private functions matched. No BLOCKER/HIGH findings.
+- Corrected TEST_MYRESULT_RLS_V2 runtime result PASS: 270 assertions. Categories: preconditions 1; recruitment_visibility 10; child_visibility 44; column_projection 28; private_reads 6; write_grants 34; unauthorized_writes 102; update_visibility 8; version_invalidation 25; workflow_guards 12. Exact counts and coverage are also in docs/SUPABASE.md.
+- Fixture mutations rolled back before PASS; all foundation tables were empty afterward. No persistent TEST data/editor membership, DDL, Auth mutation, explicit Auth row query or service-role usage. Dedicated normal test reviewer account, created separately by the owner with approval, remains unchanged and persists outside rollback; this does not implement application authentication.
+- Harness recovery history: original Auth-default allowlist was overly strict, so positive reviewer tests use the normal account rather than direct auth.users insertion. The subsequent generic UPDATE probe wrongly assumed recruitment_reviews.created_at existed; correction selects reviewed_at for that table and created_at for the other 16, with unchanged fixture predicates/42501-only denial assertions. No migration/schema repair was needed. The final corrected suite passed; do not rerun it.
+- DO NOT rerun the foundation migration. DO NOT contact, inspect, modify or clean the old AI Test Platform Supabase project in normal MyResult work. Accidental MyResult objects there are a separate future cleanup task requiring its own authorization.
+- Limits: SQL roles, not HTTP/JWT/auth.uid identity behavior; forbidden publication states tested as rejected writes; write denial covers current absence of editorial grants; one child UPDATE represents child invalidation, not all mutation permutations. Known MEDIUM KNOWN_EDITORIAL_LOCK_ORDER_RISK and KNOWN_REVIEW_ORDERING_RISK remain, as do concurrency/query-plan coverage and the existing dev-tooling advisory.
+- Public pages remain mock-backed. No application Auth, Admin, staff writer/verification service, notification backend, generated DB types or public Supabase read adapter is implemented. No production security clearance or factual government-data approval is claimed.
+
+## Previous Checkpoint: Supabase Foundation Phase 1 — 1e2720f
+
+The following is preserved history from the local-only implementation/security batch, subsequently committed and pushed as 1e2720f. Its unconnected/unexecuted statements describe that earlier checkpoint, not the current verified remote state above.
+
+Supabase Foundation Phase 1 continued the interrupted approved install from checkpoint 16600ca (master, synchronized with origin/master). Only package.json/package-lock.json were dirty on recovery; no foundation code existed. Retained those changes, installed no additional package/tool, and made no remote connection, reset/restore/stash, commit or push in that historical batch.
+
+### Phase 1 Files Changed (historical)
 
 - .gitignore / .env.example — explicitly allow the blank public env template; .env.local remains ignored.
 - package.json / package-lock.json — approved @supabase/supabase-js 2.117.2 and @supabase/ssr 0.12.7, verify:supabase operator command, and subsequent approved exact Next.js 16.3.4 → 16.3.8 security patch. No unrelated direct version changes.
@@ -23,7 +50,7 @@ Codex
 - docs/SUPABASE.md — operator gates, migration execution limits, SDK/Node requirements and both pre-existing audit findings.
 - docs/DATABASE.md, ARCHITECTURE.md, DECISIONS.md, FEATURES.md, PHASES.md and MEMORY.md — distinguish local implementation from unverified remote/database state.
 
-## Phase 1 verification and security state
+### Phase 1 verification and security state (historical)
 
 - 177 offline foundation checks passed; 36 deep-equality fixture selector comparisons against HEAD passed. Public app files, fixture/domain/validation files, routes and NEXT_TASK.md remain unchanged. Only recruitment IDs 1–2 still have supported details.
 - Initial foundation verification before the Next.js security update: npx tsc --noEmit PASSED (exit 0); git diff --check PASSED. npm run build PASSED outside the restricted sandbox (exit 0, 22/22 static pages). Compile took 5.4 minutes; build TypeScript took 105 seconds. Build required no .env.local, source/config workaround or cache deletion.
@@ -36,9 +63,9 @@ Codex
 - Dependency audit: pre-existing dev-only transitive brace-expansion 1.1.18/5.0.9 HIGH aggregate recursion DoS plus moderate CPU DoS, via ESLint/minimatch; same-major fixed 1.1.21/5.0.12. No Supabase package advisory. No audit fix/unrelated upgrade performed. See docs/SUPABASE.md for paths and advisories.
 - Installed SDK needs Node >=22; utility scripts use native TypeScript stripping (>=22.18), tested on Node 24.19.0. Node emits a harmless module-type warning for env.ts. Existing unrs-resolver postinstall was not approved/executed in this task.
 
-## Security remediation continuation — Codex
+### Security remediation continuation — Codex (historical)
 
-- Starting committed HEAD remains 16600ca. Verified and preserved all completed uncommitted Phase 1 work before installation; no reset/restore/stash, commit or push.
+- Starting committed HEAD was 16600ca. Verified and preserved all completed uncommitted Phase 1 work before installation; no reset/restore/stash, commit or push in that recovery turn.
 - Exact command: npm install next@16.3.8 --save-exact, exit 0. React/React DOM remain 19.2.8; Supabase remains 2.117.2 / SSR 0.12.7. All other direct dependencies and devDependencies unchanged, including eslint-config-next 16.3.4.
 - Compared lockfile package hashes with the pre-update snapshot: only Next.js, @next/env and eight SWC platform variants changed to 16.3.8, plus root dependency metadata. No package nodes added/removed in this remediation. npm reports three installed packages changed.
 - SHA-256 comparisons confirm the foundation clients/config, both scripts, migration, blank env example and ignore rules were preserved byte for byte. Documentation updated to reflect the resolved Next.js finding.
@@ -94,27 +121,33 @@ The following records the completed preparation batch based on 8c2b8db, subseque
 ## Known Issues
 
 - Authentication is not implemented (Login/Register are UI only)
-- Database is not connected; recruitment and exam data remains mock/hardcoded
+- Separate database foundation is deployed and controlled SQL-role verified, but the public application is not connected to it; recruitment and exam data remain mock/hardcoded
 - No real notification system exists
 - Existing search/filter/sort controls, query-parameter job filtering, Save/Track/Applied buttons, and mock login/register/contact workflows remain nonfunctional; not implemented by this preparation batch
 - MobileHome and Eligibility Checker use the canonical recruitment boundary; desktop Closing Soon retains local presentation metadata but shares canonical detail-availability gating
 - RRB NTPC legacy eligibility data is temporarily excluded because no canonical recruitment fixture exists
 - Results, Admit Card, and Answer Key detail routes remain deferred pending approved data/product behavior; no fake routes or government facts were added
-- /alerts is informational only. Personalized alerts, subscriptions, preferences, authentication, database, and Admin functionality remain unimplemented
+- /alerts is informational only. Personalized alerts, subscriptions, preferences, application authentication, application database integration and Admin functionality remain unimplemented
 - No verified official MyResult Telegram/WhatsApp URL is available; the contact page's existing Telegram handle is not verified and was not converted into a link
 - Existing fixture detail vacancy breakdowns do not reconcile with their headline totals; this mock factual debt was preserved, not silently corrected or treated as real production seed data.
 - Legacy detail views still depend on complete fixture shapes, label-based dates and a hardcoded display status. The future adapter must define formatting and missing-detail availability instead of applying these assumptions to incomplete real records.
 - Synchronous mock imports in client components need server-loading/prop integration for real data. Stable DTO contracts reduce UI churn but do not implement this bridge.
-- Structural validation is not factual verification/authorization. Local SQL now defines FKs/RLS/version guards but execution is unverified. Future work still needs staff services/transaction tests, UUID/legacy URL mapping, numeric-limit alignment, payload limits and verified official content.
-- No API routes, Admin/auth or notification backend added. Sources/reviews now have local SQL definitions; user-side entities remain design/contracts only. Local SQL and green frontend checks are not production database/security approval.
+- Structural validation is not factual verification/authorization. Foundation FKs/RLS/version guards are deployed with bounded runtime coverage, not HTTP/JWT or comprehensive concurrency coverage. Future work still needs staff services, further transaction tests, UUID/legacy URL mapping, numeric-limit alignment, payload limits and verified official content.
+- No API routes, application Admin/auth or notification backend added. Sources/reviews have deployed tables; user-side entities remain design/contracts only. Neither the bounded runtime PASS nor green frontend checks are comprehensive production database/security approval.
 
 ## Current Work
 
-Supabase Foundation Phase 1 and the approved Next.js 16.3.8 security remediation are complete, including audit, static/offline checks, TypeScript and production build. Ready for review/checkpoint with the remaining dev-only brace-expansion and unexecuted-SQL concerns documented. Remote setup/execution remain NOT APPROVED in this task. Previous route-integrity work is untouched. No commit or push performed.
+Document the completed isolated foundation/runtime checkpoint without implementation or remote actions. Source/migration/packages/environment and public mock behavior are untouched. Documentation changes await review; no commit or push performed. TypeScript/build successes from 1e2720f remain historical, not fresh results of this documentation task. Do not repeat migration/V2, modify the reviewer, or touch the old project.
+
+### Documentation checkpoint checks — Codex
+
+- Reviewed the full documentation diff and current foundation files; only the eight listed documentation files changed. Git ignore check confirms .env.local remains ignored; no environment contents were read.
+- Existing lightweight offline suite rerun: 177 foundation checks and 36/36 fixture comparisons against HEAD PASSED (exit 0). It uses synthetic configuration/mocked networking, does not load .env.local and performs no database calls or SQL execution. Existing harmless Node module-type warning remains.
+- git diff --check PASSED; assertion-category totals and documentation-only scope checked locally. No TypeScript/production build rerun for this docs-only checkpoint; prior successes remain historical. No remote migration, RLS suite or Auth operation rerun.
 
 ## Next Recommended Task
 
-Request separate approval for the remaining dev-tooling remediation and isolated database setup/execution tests. The approved Next.js security update is completed. NEXT_TASK.md was not changed; its older broad setup/homepage-migration outline is not authority to migrate public pages or connect remotely in this phase. Stop after the handoff.
+Single proposal in NEXT_TASK.md: prepare a read-only HTTP/JWT reader-access verification plan for the NEW project. Await explicit approval; do not acquire tokens, run HTTP requests or implement auth in this checkpoint. This targets the documented coverage gap without a CMS, writer, fixtures or production read cutover. Concurrency risks, generated types/DTO/ID mapping and dev-tooling remediation remain separate later work, not additional approved tasks.
 
 ---
 

@@ -50,10 +50,11 @@ Legend:
 [x] Dependency-free recruitment Admin input structural validation — standalone only; not connected to UI/API/persistence
 [x] Recruitment schema reconciliation — design only; lifecycle, publication, verification/provenance and future user entities documented
 [x] Shared mock recruitment read boundary — public fixture/selector compatibility retained
-[ ] Supabase project setup
+[x] Separate NEW MyResult Supabase project setup + safe publishable connectivity verification
 [x] Local Supabase packages, lazy public env contract, browser/request-scoped server factories and operator read-check script
-[~] Normalized organizations/recruitments and owned content tables + RLS/migrations — local SQL/static review complete; database execution NOT VERIFIED
-[ ] Result/Admit Card/Answer Key lifecycle update persistence (attached to Recruitment)
+[x] Normalized foundation schema deployed once — 17 tables; owner-reported rollback-only SQL-role RLS suite PASS, 270 assertions; fixtures rolled back and foundation tables empty afterward
+[ ] HTTP/JWT/auth.uid reader verification — not established by SQL-role tests
+[ ] Result/Admit Card/Answer Key lifecycle update application persistence — recruitment_updates schema deployed, writer/read integration and verified real content not implemented
 [ ] Syllabus table
 [ ] Database-backed Exam Calendar date projection
 [ ] Real data in homepage
@@ -66,7 +67,7 @@ Legend:
 
 ## Authentication
 
-[ ] Supabase Auth setup
+[ ] Application Supabase Auth integration — dedicated normal test reviewer account exists only for testing
 [ ] Login — functional
 [ ] Register — functional
 [ ] Forgot Password
@@ -115,7 +116,7 @@ Legend:
 ## Security
 
 [~] Basic security
-[~] Supabase Row Level Security — fail-closed local policies for all 17 Core V1 tables; database execution/security tests pending
+[~] Supabase Row Level Security — all 17 foundation tables enabled; controlled SQL-role runtime checkpoint complete, not comprehensive production/HTTP/JWT/staff authorization coverage
 [ ] API route protection
 [~] Input validation — recruitment content contract implemented; server enforcement and other workflows not implemented
 [ ] Rate limiting
@@ -127,5 +128,7 @@ Legend:
 [x] Vercel deployment
 [x] GitHub repository
 [ ] Custom domain
-[ ] Environment variables configured
+[~] Environment variables configured — ignored local MyResult publishable configuration only; deployment/Vercel configuration not verified
 [ ] CI/CD pipeline
+
+Infrastructure checkpoint recorded 2026-10-04 from owner-supplied remote results. No user-facing functionality was added; public pages remain mock-backed. Known review-ordering and concurrent lock-order risks and the development-tooling advisory remain. Do not rerun the foundation migration or completed V2 suite. See SUPABASE.md for evidence, scope and remaining limits.
