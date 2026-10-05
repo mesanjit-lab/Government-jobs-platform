@@ -47,7 +47,9 @@ Last updated: October 2026
 - [x] Foundation database/RLS runtime checkpoint — 17 tables deployed; owner-reported rollback-only SQL-role suite PASS, 270 assertions, fixtures rolled back and tables empty afterward
 - [x] Anonymous HTTP reader harness Phase 1 + offline safety tests — no application auth integration
 - [x] Controlled anonymous HTTP projection/grant checkpoint — owner-reported PASS 108/108; zero-row approved/restricted/private/wildcard reads
-- [ ] Authenticated JWT reader verification — NOT RUN; planning is proposed only
+- [x] Narrower authenticated JWT acceptance/reader-grant verifier + offline tests — duplicate-JSON, terminal-cleanup and parser-resource corrections applied; no real token or acquisition/network execution
+- [ ] Static security review of authenticated harness — next proposed gate before session acquisition
+- [ ] Actual authenticated JWT reader execution — NOT RUN; independent database role/auth.uid/identity coverage unavailable
 - [ ] Positive HTTP row visibility / publication filtering / auth.uid behavior verification — empty reads do not establish this
 - [ ] Organizations/recruitments + owned content tables + verified real data
 - [ ] Results/Admit Cards/Answer Keys as recruitment lifecycle updates + verified real data
@@ -101,7 +103,7 @@ Last updated: October 2026
 
 Standalone recruitment structural validation exists from Phase 3 preparation; production server enforcement and other input contracts remain pending.
 
-The 2026-10-04 runtime checkpoint is based on owner-supplied Dashboard results. No service-role usage, Auth mutations or DDL occurred in the V2 suite. The owner later completed the controlled anonymous HTTP run: PASS 108/108, recorded 2026-10-05. This tests zero-row projections/grants, not authenticated JWT, positive row visibility, HTTP write denial or auth.uid behavior. Known review-ordering and concurrent lock-order risks remain. Do not rerun the foundation migration, V2 suite or anonymous HTTP verification without separate approval; never touch the old AI Test Platform project in normal MyResult work. Phase 3 as a whole remains incomplete: public pages are still mock-backed, verified real content and a read adapter are absent, and Admin/authorization services are not implemented. See SUPABASE.md for counts and limitations. NEXT_TASK.md proposes one authenticated JWT planning task; it does not authorize implementation, session acquisition or remote execution.
+Owner-reported SQL-role PASS 270/270 and anonymous HTTP PASS 108/108 remain bounded checkpoints. Narrower authenticated harness is implemented/offline-tested, not remotely executed: no real token or sign-in/out/refresh. It does not independently prove database role/auth.uid, identity RLS, ownership/staff authorization, positive visibility, HTTP writes or application sessions. Known concurrency/review-ordering risks remain. No migration/V2/anonymous rerun or old AI Test Platform contact. Phase 3 remains incomplete: public pages mock-backed, verified content/read adapters and Admin/authorization services absent. See SUPABASE.md; NEXT_TASK.md proposes static security review before any separately approved acquisition/execution.
 
 ---
 

@@ -6,7 +6,7 @@ Last updated: 2026-10-05
 
 ## Current Batch
 
-Documentation/handoff update after the owner's controlled anonymous HTTP verification passed 108/108 checks on the NEW myresult project. Preserved all six intentional uncommitted harness files; this turn changes only documentation, including the explicitly requested NEXT_TASK.md proposal. Committed HEAD remains `72507002dbc794ee925f7daa22db1cf132f37e7e docs: record verified Supabase RLS checkpoint`, master synchronized with recorded origin/master. Codex does not rerun remote verification, contact Supabase, execute SQL/migration/V2, change database/Auth/configuration, dependencies or application code, commit or push in this task.
+Offline implementation of the explicitly approved narrower JWT ACCEPTANCE + AUTHENTICATED HTTP READER GRANTS boundary. Starting HEAD: `6b88e297917437994f3b38f23c9d13b6fb695454 test: verify anonymous Supabase reader access`; master synchronized with recorded origin/master and worktree clean before editing. Separate verifier/tests only; anonymous scripts unchanged. No session-acquisition helper, real token, sign-in/out/refresh, network, SQL, database/Auth/schema/configuration change, dependency/application change, commit or push. Next gate: static security review, not execution or application auth.
 
 ## Last Agent
 
@@ -14,12 +14,12 @@ Codex
 
 ## Files Changed
 
-- scripts/verify-supabase-readers.mjs (new) — separate anonymous-only operator harness; exact projection manifest, zero-row GETs, opt-in/project-confirmation gates, bounded/redacted classification and fail-fast output. Existing verify-supabase.mjs unchanged.
-- scripts/check-supabase-readers.mjs (new) — migration-derived manifest comparisons and synthetic/mocked safety checks, never real network or .env.local loading.
-- docs/SUPABASE.md — harness usage, operator project attestation, counts, limits and separate execution approval gates.
-- docs/FEATURES.md / docs/PHASES.md — bounded anonymous HTTP projection/grant checkpoint complete; JWT and positive row visibility unverified; Phase 3 remains incomplete.
-- MEMORY.md — owner-supplied anonymous result, current handoff and preserved prior checkpoint history.
-- NEXT_TASK.md — one proposed planning-only task: authenticated JWT reader verification; not started and no token/session or execution authorization implied.
+- scripts/verify-supabase-authenticated-reader.mjs (new) — separate operator verifier; concealed TTY intake, pinned public-key/claim validation, reused reader manifest, paired invalid-token controls, bounded/redacted GET-only checks; no SDK or Auth user query.
+- scripts/check-supabase-authenticated-reader.mjs (new) — generated synthetic keys/JWTs, mocked HTTP, manifest/secret/CLI/intake regressions; no .env.local or real network.
+- docs/SUPABASE.md — narrower scope, intake/signature/control design, counts, limitations and review gates.
+- docs/FEATURES.md / docs/PHASES.md — offline harness implemented; actual authenticated execution NOT RUN; Phase 3/public integration incomplete.
+- MEMORY.md — implementation/checks and preserved prior checkpoint history.
+- NEXT_TASK.md — one proposed static security review before any session acquisition; not acquisition/execution approval.
 
 ## Current Verified Foundation Checkpoint
 
@@ -28,6 +28,7 @@ Codex
 - Foundation migration executed once successfully; all 17 tables exist and RLS is enabled. Catalog preflight PASS_WITH_FINDINGS: 14/14 SELECT policies, no unexpected/public write policies, privilege/exposure problems or constraint metadata mismatches; 16/16 triggers and 7/7 private functions matched. No BLOCKER/HIGH findings.
 - Corrected TEST_MYRESULT_RLS_V2 runtime result PASS: 270 assertions. Categories: preconditions 1; recruitment_visibility 10; child_visibility 44; column_projection 28; private_reads 6; write_grants 34; unauthorized_writes 102; update_visibility 8; version_invalidation 25; workflow_guards 12. Exact counts and coverage are also in docs/SUPABASE.md.
 - Owner-supplied controlled anonymous HTTP result recorded 2026-10-05: mode ANONYMOUS, authenticated NOT RUN, status PASS, ok true; planned/completed/passed 108/108/108; approved 14, excluded 52, private 25, wildcard 17; firstNonPass null. One controlled run on the NEW myresult project after the final static review. This is zero-row projection/grant evidence, NOT authenticated JWT, positive row visibility, publication filtering with returned records, auth.uid behavior, HTTP write denial or production security clearance. Codex does not independently rerun it.
+- Narrower authenticated harness implemented/offline-tested only; actual execution NOT RUN. A future bounded PASS would not independently prove PostgreSQL role/auth.uid, identity RLS, ownership, staff authorization, positive row visibility, HTTP writes or application sessions. No existing schema-only identity readback exists; anon/authenticated share grants/policies.
 - Fixture mutations rolled back before PASS; all foundation tables were empty afterward. No persistent TEST data/editor membership, DDL, Auth mutation, explicit Auth row query or service-role usage. Dedicated normal test reviewer account, created separately by the owner with approval, remains unchanged and persists outside rollback; this does not implement application authentication.
 - Harness recovery history: original Auth-default allowlist was overly strict, so positive reviewer tests use the normal account rather than direct auth.users insertion. The subsequent generic UPDATE probe wrongly assumed recruitment_reviews.created_at existed; correction selects reviewed_at for that table and created_at for the other 16, with unchanged fixture predicates/42501-only denial assertions. No migration/schema repair was needed. The final corrected suite passed; do not rerun it.
 - DO NOT rerun the foundation migration. DO NOT contact, inspect, modify or clean the old AI Test Platform Supabase project in normal MyResult work. Accidental MyResult objects there are a separate future cleanup task requiring its own authorization.
@@ -138,6 +139,25 @@ The following records the completed preparation batch based on 8c2b8db, subseque
 
 ## Current Work
 
+Separate authenticated verifier uses native Node crypto, no SDK/new dependency/shared extraction. Reuses anonymousChecks/buildReaderRequest/classifyReaderResponse unchanged. Concealed TTY-only CLI intake requires --concealed-token; no token argv/env/file source or echo. Refuses non-TTY/other data listeners, bounds intake to 16 KiB/60 seconds and restores mode/listeners on success/cancel/error/timeout. Programmatic accessToken is process-memory input for tests/future reviewed callers; no acquisition helper exists.
+
+Network remains opt-in and independently pinned. Public configuration/requests and the input token are snapshotted; JWT issuer matches that origin. Bounded strict JWT/header parsing, exact expected normal-user subject, authenticated role/audience, is_anonymous=false, UUID session_id, exp/iat/optional nbf and run-cap-plus-60-second lifetime margin. Only ES256/P-256 and RS256/2048–4096-bit public keys; one future pinned public JWKS GET supplies an unambiguous matching kid. Native signature verification; no signing-secret/SDK getUser fallback or token-provided key URLs. Unsupported/missing/invalid key/signature stops before Data API.
+
+Matrix: 14 approved + 52 excluded + 25 private = 91 readers; optional 17 wildcards = 108. The first approved organizations projection is counted once and paired with two extra fixed controls: signature-corrupted derivative and unmistakably invalid synthetic token. Control PASS only for HTTP 401 + PGRST301, not permission/bare/ambiguous errors. Final PASS needs signature, both controls and all readers. Planned total including one JWKS check = 94 mandatory / 111 with wildcards. All generated requests are sequential GET, limit=0 for Data API, no retries/redirects/cookies/RPC/embedding/writes; 10-second request/body deadline, 180-second whole-run cap, 16-KiB API and 64-KiB JWKS bodies. No refresh or anonymous fallback.
+
+Reader permissions retain HTTP 401/403 + exact 42501. Network/timeout/429/5xx inconclusive; schema/auth/format mismatches fail. Compact output has fixed labels/counts/allowlisted codes only, no token/key/URL/ref/claims/JWKS/raw response/request/error details. Real authenticated execution NOT RUN; no token acquired or Auth operation. Public app/migration/helpers/packages/old scripts and ignored .env.local unchanged. Build excluded: explicit offline-only task, existing build downloads fonts.
+
+### Authenticated offline implementation verification — Codex, 2026-10-05
+
+- Static review remediation (2026-10-05): fixed three MEDIUM offline-harness findings before any real token use. A bounded recursive JSON parser rejects duplicate member names at every nested object level in JWT header/payload and JWKS responses, with explicit 32-value-depth and 1,024-total-value/container limits; terminal intake restores raw mode and removes only its scoped handlers on simulated SIGINT/SIGTERM/exit, cancellation, timeout and prompt failure. External signals with no pre-existing handler are re-signalled only in the real process after cleanup; simulated Windows/PowerShell behavior remains a later runtime limitation.
+- New suite PASSED: 31,806 assertions across 178 scenarios, including 12 actual isolated CLI entry-point cases. Generated synthetic signing keys/JWTs and mocked HTTP only; zero real network requests. Large assertion count includes repeated secret-canary scans, not 31,806 independent security guarantees. Covers token/config snapshots, strict claims/signatures/controls, manifest drift, duplicate/malformed/depth/complexity-bounded JSON, terminal signal cleanup, output/error paths and bounded transport failures.
+- Unchanged anonymous suite PASSED: 3,708 assertions across 86 scenarios. Existing foundation checks PASSED: 177; fixture comparisons against HEAD PASSED: 36/36.
+- Installed TypeScript `--noEmit --incremental false`, Node syntax checks for both new scripts and targeted ESLint PASSED (exit 0). No packages installed. Build NOT RUN because this task permits offline checks only and the existing build downloads fonts; historical build results are not new authenticated evidence.
+- Complete tracked/new-file diff reviewed; git diff --check PASSED. Application, lib/helpers/domain/data, migration, packages/lockfile, anonymous/foundation scripts and env templates unchanged relative to HEAD; .env.local remains ignored/untracked and was not read or modified. No staging, commit, push or real Auth/database/network operation.
+- Actual authenticated execution remains NOT RUN. Real Windows terminal concealment, deployed signing configuration, JWT/API rejection behavior and session revocation require later separately approved review/execution; offline mocks do not prove them. NEXT_TASK.md proposes static security review only, before session acquisition.
+
+### Anonymous harness checkpoint — 6b88e29 (historical)
+
 Anonymous harness implemented and final static review approved; owner reports the controlled anonymous run PASS 108/108. Manifest: 17 tables, 14 approved projections, 52 excluded public columns, 25 private columns (91 mandatory); 17 optional separately counted wildcards (108 with flag). Only GET requests generated with limit=0; request builder accepts GET/HEAD only. No Authorization/JWT/session support; authenticated mode always NOT RUN. Requires explicit network flag, myresult attestation and an independently Dashboard-supplied expected project ref (never derived from env). Effective process.env is snapshotted once; all actual request hostnames must match that ref before fetch, including when inherited env overrides an env-file. This is binding, not automatic project-name discovery. Hosted HTTPS Supabase origins only, no redirects/retries/embedding/RPC/writes, sequential 10-second requests, 180-second run cap and 16-KiB bodies. Forbidden permission PASS requires HTTP 401/403 AND exact 42501; the same response on an approved read fails. Bare statuses/JWT/schema errors never count as permission PASS. Fixed classifications/allowlisted codes and no sensitive/raw output. Zero-row checks do not prove visibility, HTTP writes, auth.uid behavior or production readiness.
 
 Public application/fixtures, clients/env helper, existing verifier/foundation checks, migration, packages/lockfile/configuration and .env.local remain untouched. No environment contents displayed/edited, Supabase remote request, SQL execution, Auth operation, persistent fixture, service-role usage or old-project contact. Offline scripts do not load .env.local; Next's normal build may load it without displaying values and request its existing Google fonts. Do not run network verification before separate approval; do not repeat migration/V2 or modify the reviewer.
@@ -176,7 +196,7 @@ The prior eight-file documentation checkpoint (MEMORY.md, NEXT_TASK.md and docs/
 
 ## Next Recommended Task
 
-Single proposal in NEXT_TASK.md: plan authenticated JWT reader verification, using the existing dedicated normal test account without requesting/printing credentials or tokens. Await explicit planning approval; no implementation, sign-in/token acquisition, Auth operation or network execution is started/authorized by this documentation update. Any later implementation/session/execution needs separate approval. Do not rerun anonymous HTTP verification, migration or V2. Concurrency risks, generated types/DTO/ID mapping and dev-tooling remediation remain separate work; no CMS, writer, fixtures or production read cutover authorized.
+Single proposal in NEXT_TASK.md: static security review of the new authenticated verifier/tests before any session acquisition. No token, sign-in/out/refresh, Auth operation or network execution authorized. Later acquisition/cleanup and controlled execution need separate approvals. Do not rerun anonymous HTTP verification, migration or V2. Concurrency, generated types/DTO/ID mapping and dev-tooling remediation remain separate work; no CMS/writer/fixtures/application auth/public cutover authorized.
 
 ---
 
