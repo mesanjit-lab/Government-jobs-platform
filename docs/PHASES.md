@@ -45,7 +45,10 @@ Last updated: October 2026
 - [x] Logical recruitment schema design reconciled; foundation migration executed once successfully on the NEW project
 - [x] Supabase Foundation Phase 1 local clients/env/read-check mechanism and approved package installation
 - [x] Foundation database/RLS runtime checkpoint — 17 tables deployed; owner-reported rollback-only SQL-role suite PASS, 270 assertions, fixtures rolled back and tables empty afterward
-- [ ] HTTP/JWT/auth.uid reader behavior verification — SQL-role testing is not identity/HTTP coverage
+- [x] Anonymous HTTP reader harness Phase 1 + offline safety tests — no application auth integration
+- [x] Controlled anonymous HTTP projection/grant checkpoint — owner-reported PASS 108/108; zero-row approved/restricted/private/wildcard reads
+- [ ] Authenticated JWT reader verification — NOT RUN; planning is proposed only
+- [ ] Positive HTTP row visibility / publication filtering / auth.uid behavior verification — empty reads do not establish this
 - [ ] Organizations/recruitments + owned content tables + verified real data
 - [ ] Results/Admit Cards/Answer Keys as recruitment lifecycle updates + verified real data
 - [ ] Syllabus table + real data
@@ -89,7 +92,7 @@ Last updated: October 2026
 
 ## Phase 7 — Security & Production
 
-- [~] Row Level Security — foundation SQL-role checkpoint complete; HTTP/JWT, future user/staff policies and broader security coverage pending
+- [~] Row Level Security — foundation SQL-role and bounded anonymous HTTP projection/grant checkpoints complete; JWT, positive HTTP row visibility, future user/staff policies and broader security coverage pending
 - [ ] API protection
 - [ ] Input validation
 - [ ] Security audit
@@ -98,7 +101,7 @@ Last updated: October 2026
 
 Standalone recruitment structural validation exists from Phase 3 preparation; production server enforcement and other input contracts remain pending.
 
-The 2026-10-04 runtime checkpoint is based on owner-supplied Dashboard results. No service-role usage, Auth mutations or DDL occurred in the V2 suite. Known review-ordering and concurrent lock-order risks remain. Do not rerun the foundation migration or V2 suite; never touch the old AI Test Platform project in normal MyResult work. Phase 3 as a whole remains incomplete: public pages are still mock-backed, verified real content and a read adapter are absent, and Admin/authorization services are not implemented. See SUPABASE.md for counts and limitations; NEXT_TASK.md contains one proposed planning task, not implementation approval.
+The 2026-10-04 runtime checkpoint is based on owner-supplied Dashboard results. No service-role usage, Auth mutations or DDL occurred in the V2 suite. The owner later completed the controlled anonymous HTTP run: PASS 108/108, recorded 2026-10-05. This tests zero-row projections/grants, not authenticated JWT, positive row visibility, HTTP write denial or auth.uid behavior. Known review-ordering and concurrent lock-order risks remain. Do not rerun the foundation migration, V2 suite or anonymous HTTP verification without separate approval; never touch the old AI Test Platform project in normal MyResult work. Phase 3 as a whole remains incomplete: public pages are still mock-backed, verified real content and a read adapter are absent, and Admin/authorization services are not implemented. See SUPABASE.md for counts and limitations. NEXT_TASK.md proposes one authenticated JWT planning task; it does not authorize implementation, session acquisition or remote execution.
 
 ---
 

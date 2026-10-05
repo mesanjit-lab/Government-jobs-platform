@@ -53,7 +53,10 @@ Legend:
 [x] Separate NEW MyResult Supabase project setup + safe publishable connectivity verification
 [x] Local Supabase packages, lazy public env contract, browser/request-scoped server factories and operator read-check script
 [x] Normalized foundation schema deployed once — 17 tables; owner-reported rollback-only SQL-role RLS suite PASS, 270 assertions; fixtures rolled back and foundation tables empty afterward
-[ ] HTTP/JWT/auth.uid reader verification — not established by SQL-role tests
+[x] Anonymous HTTP reader verification harness + offline safety tests — operator-only, no application integration
+[x] Controlled anonymous HTTP projection/grant verification — owner-reported PASS 108/108 (14 approved, 52 excluded, 25 private, 17 wildcard); zero-row reads only
+[ ] Authenticated JWT reader verification — NOT RUN; dedicated test account alone does not verify it
+[ ] Positive row visibility / HTTP publication filtering / auth.uid behavior verification — not established by empty reads
 [ ] Result/Admit Card/Answer Key lifecycle update application persistence — recruitment_updates schema deployed, writer/read integration and verified real content not implemented
 [ ] Syllabus table
 [ ] Database-backed Exam Calendar date projection
@@ -116,7 +119,7 @@ Legend:
 ## Security
 
 [~] Basic security
-[~] Supabase Row Level Security — all 17 foundation tables enabled; controlled SQL-role runtime checkpoint complete, not comprehensive production/HTTP/JWT/staff authorization coverage
+[~] Supabase Row Level Security — all 17 foundation tables enabled; controlled SQL-role and anonymous HTTP projection/grant checkpoints complete; JWT, positive HTTP row visibility, staff authorization and comprehensive production security remain unverified
 [ ] API route protection
 [~] Input validation — recruitment content contract implemented; server enforcement and other workflows not implemented
 [ ] Rate limiting
@@ -131,4 +134,4 @@ Legend:
 [~] Environment variables configured — ignored local MyResult publishable configuration only; deployment/Vercel configuration not verified
 [ ] CI/CD pipeline
 
-Infrastructure checkpoint recorded 2026-10-04 from owner-supplied remote results. No user-facing functionality was added; public pages remain mock-backed. Known review-ordering and concurrent lock-order risks and the development-tooling advisory remain. Do not rerun the foundation migration or completed V2 suite. See SUPABASE.md for evidence, scope and remaining limits.
+Infrastructure SQL-role checkpoint recorded 2026-10-04; anonymous HTTP PASS 108/108 recorded 2026-10-05, both from owner-supplied remote results. No user-facing functionality was added; public pages remain mock-backed. Known review-ordering and concurrent lock-order risks and the development-tooling advisory remain. Do not rerun the foundation migration, completed V2 suite or anonymous HTTP run without separate approval. NEXT_TASK.md proposes authenticated JWT planning only. See SUPABASE.md for evidence, scope and remaining limits.

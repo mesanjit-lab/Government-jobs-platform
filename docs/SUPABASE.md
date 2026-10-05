@@ -1,6 +1,6 @@
 # Supabase Foundation — operator handoff
 
-Status as of 2026-10-04: separate NEW `myresult` Supabase project configured; safe publishable-key connectivity PASSED; foundation migration executed once successfully; 17 foundation tables deployed; controlled rollback-only SQL-role RLS verification PASSED 270 assertions. Remote execution/results were supplied by the owner; this documentation checkpoint did not rerun them. Public pages remain mock-backed. Application authentication, Admin, notifications and Supabase-backed public reads are NOT IMPLEMENTED.
+Status as of 2026-10-05: separate NEW `myresult` Supabase project configured; safe publishable-key connectivity PASSED; foundation migration executed once successfully; 17 foundation tables deployed; controlled rollback-only SQL-role RLS verification PASSED 270 assertions; controlled anonymous HTTP projection/grant verification PASSED 108/108 checks. Remote execution/results were supplied by the owner; this documentation checkpoint did not rerun them. Authenticated JWT and positive row visibility remain unverified. Public pages remain mock-backed. Application authentication, Admin, notifications and Supabase-backed public reads are NOT IMPLEMENTED.
 
 ## Verified remote checkpoint and isolation boundary
 
@@ -47,7 +47,7 @@ No credentials are required to import the factories or build the existing mock s
 Browser factory: `lib/supabase/client.ts`, client-only, uses `createBrowserClient`.
 Server factory: `lib/supabase/server.ts`, server-only, new instance per request, awaits Next cookies. Reads use getAll. Cookie writes require an explicit future response writer applying BOTH cookies and the SSR package's cache headers; the default callback throws instead of pretending sessions were persisted. Auth Proxy/session refresh/UI are deferred because no auth workflow uses this foundation.
 
-Installed: `@supabase/supabase-js` 2.117.2 and `@supabase/ssr` 0.12.7. SDK Node minimum is 22; the two Node utilities use native TypeScript stripping and require Node >=22.18 (tested on 24.19.0). Native loading of env.ts currently emits a harmless MODULE_TYPELESS_PACKAGE_JSON warning; the app's module configuration was not changed to suppress it.
+Installed: `@supabase/supabase-js` 2.117.2 and `@supabase/ssr` 0.12.7. SDK Node minimum is 22; the Node utilities use native TypeScript stripping and require Node >=22.18 (tested on 24.19.0). Native loading of env.ts currently emits a harmless MODULE_TYPELESS_PACKAGE_JSON warning; the app's module configuration was not changed to suppress it.
 
 Approved security continuation: Next.js was updated from the exact pin 16.3.4 to 16.3.8 with `npm install next@16.3.8 --save-exact`. React/React DOM remain 19.2.8; both Supabase versions and all other direct dependencies remain unchanged. The lockfile updated only Next.js, @next/env and its eight SWC platform packages to 16.3.8; no other package nodes changed during this update. npm changed three installed packages. Foundation code, scripts, SQL and env-template hashes match the pre-update snapshot.
 
@@ -69,6 +69,52 @@ The offline script uses synthetic configuration and mocked fetches only. It chec
 Historical post-security-update results on Next.js 16.3.8: 177 offline checks and 36 fixture comparisons PASSED; standalone TypeScript PASSED; production build PASSED (exit 0, 22/22 static pages, no .env.local); git diff --check PASSED. Compilation took 9.9 minutes and build TypeScript took 3.5 minutes; the single build was allowed to finish. The earlier Phase 1 operator command without configuration exited 1 with a clear missing-env message and no request. Those local checks do not establish remote execution; the later owner-supplied remote checkpoint above records separate connectivity/catalog/runtime evidence.
 
 ## Read connectivity mechanism (future reruns require explicit approval)
+
+### Anonymous reader harness — Phase 1 implemented, owner-reported HTTP PASS
+
+`scripts/verify-supabase-readers.mjs` is a separate Node-only operator utility. It does not replace `scripts/verify-supabase.mjs`, use browser/server cookie clients, implement application authentication, or connect public pages. Public pages remain mock-backed.
+
+After the second/final static review approved the corrected harness, the owner executed it once against the independently confirmed NEW myresult project. Actual result supplied by the owner and recorded 2026-10-05:
+
+```json
+{"mode":"ANONYMOUS","authenticated":"NOT RUN","status":"PASS","ok":true,"planned":108,"completed":108,"passed":108,"categories":{"approved":14,"excluded":52,"private":25,"wildcard":17},"firstNonPass":null}
+```
+
+This establishes only the tested anonymous zero-row projection/grant boundary: 14 approved reads succeeded and 94 forbidden column/wildcard projections met the permission-denial criteria. The compact result does not report individual denial HTTP statuses, so do not infer a per-check 401/403 breakdown. Codex did not rerun the remote test. Authenticated JWT verification remains pending and is reported `NOT RUN`; this phase accepts no JWT/password, and includes no sign-in, refresh, sign-out or Auth request. No automatic rerun is authorized.
+
+Its immutable explicit manifest matches the committed migration's 17 tables and column grants. Mandatory anonymous checks: 14 full approved public projections, 52 individual excluded public columns, and 25 individual columns across the three private tables (91 total). `--include-wildcards` adds a separately counted category of 17 forbidden wildcard projections (108 total). Salary and vacancy-count tables do not have `id`; reviews have `reviewed_at`, not `created_at`. No shared-column assumption is used.
+
+Only GET requests are generated, with `select` from the manifest and `limit=0`, public schema, publishable `apikey`, and no Authorization/cookie header. The guarded request builder permits GET/HEAD only and rejects write methods, unknown paths/projections/options, RPC, embedding and non-hosted project origins. This phase supports HTTPS `<project-ref>.supabase.co` origins only; custom/local endpoints need separate review. Redirects are refused, requests are sequential with no retries, each request including body handling is bounded by 10 seconds, the whole run by 180 seconds, and response bodies by 16 KiB. A timeout/error/non-pass stops the run; uncompleted checks are not passes.
+
+Classification: `PASS_ALLOWED_EMPTY` requires a successful approved read with an empty JSON array. `PASS_PERMISSION_DENIED` requires a forbidden read with HTTP 401 OR 403 AND allowlisted error code `42501`; an approved projection with that combination is `FAIL_UNEXPECTED_DENY`. Bare 401/403, JWT/API-key errors, missing relations/columns and schema-cache errors are not permission passes. The supported status pair is not a claim about an observed response from this deployment. Unexpected allows/denials fail. Network/timeout, rate-limit and server failures are inconclusive. Malformed/oversized bodies fail closed. Native fetch's redirect-refusal error can be reported as an inconclusive transport error, but is never followed or retried. CLI output is one compact JSON summary with category/completion counts and at most the first non-pass. It contains only fixed labels/manifest names, HTTP status and allowlisted codes, not URL/key/project ref/headers/JWT/records/raw bodies or exception text.
+
+Successful zero-row checks prove only the tested projection/grant boundary: they do NOT prove row visibility, publication/child filtering with returned records, HTTP write denial, auth.uid identity behavior, or comprehensive production security. No write capability is exercised. Operational HTTP logging may still occur during a separately approved future run.
+
+Offline command (does NOT load `.env.local`):
+
+```powershell
+node scripts/check-supabase-readers.mjs
+```
+
+The tests replace the two public env variables temporarily in process with synthetic values, mock every request, prohibit real fetch, check the full manifest against local SQL text, and restore the inherited process environment/fetch. They capture console.log/error and stdout/stderr, scan sensitive synthetic canaries, and exercise the actual CLI entry branch in isolated Node processes with synthetic env and mocked/blocked global fetch installed before import. No .env.local or inherited NODE_OPTIONS is loaded by those child tests. SQL is read as text only, never executed.
+
+Phase 1 local results: 2,506 offline reader checks PASSED; existing 177 foundation checks and 36 fixture comparisons PASSED; TypeScript, targeted script lint, production build (22/22 static pages) and git diff --check PASSED. Initial restricted build could not fetch existing Google fonts; the unchanged build passed outside that restriction. These are local/offline results, not new Supabase HTTP/JWT evidence.
+
+Default refusal (no network and no .env.local loading):
+
+```powershell
+node scripts/verify-supabase-readers.mjs
+```
+
+For any separately approved future run, independently open the NEW `myresult` Dashboard and obtain its project ref there, not from NEXT_PUBLIC_SUPABASE_URL. The harness additionally requires `--expected-project-ref=<independently-confirmed-ref>` together with network opt-in and the myresult attestation. The owner-completed run is not continuing authorization; no rerun is performed or authorized by this documentation task. Never share or print values. The pin is a non-credential argument, but local command/history visibility is possible; it is never echoed by the harness. The attestation is NOT automatic discovery of the Dashboard project name.
+
+The effective process.env values are read once; Node env-file loading preserves already inherited environment values. All request URLs are built from that snapshot and their hostnames must equal the independently supplied ref plus `.supabase.co` before any fetch. Missing/malformed ref, malformed/unapproved origin, or mismatch sends zero requests. Thus an inherited old-project endpoint cannot pass a NEW-project pin. No later environment reread changes the bound requests. Offline tests cover both mismatch and mid-run env changes with synthetic refs. A wrongly confirmed ref or malicious local environment is not automatically detectable; independent Dashboard confirmation remains required.
+
+Duplicate ref arguments and unknown arguments (including JWT/endpoint overrides) are rejected without echoing them. No additional environment variables, service-role credentials, fixtures, RPC, SQL or Auth operations are used. Do not contact the old AI Test Platform project.
+
+Pre-execution correction validation (2026-10-05): 3,708 assertions across 86 classification/runner/CLI scenarios PASSED, including 12 isolated CLI cases and both permission statuses. Existing 177 foundation checks and 36 fixture comparisons, TypeScript, targeted lint, Node syntax checks and git diff --check PASSED at that correction step. Child-process tests require Node spawning; restricted execution returned EPERM, so the same offline-only suite passed with subprocess permission. No Supabase/network execution occurred in that correction step. Earlier production build remains historical; no build rerun in the offline-only correction. The subsequent owner-supplied anonymous HTTP result is recorded separately above; authenticated JWT remains unverified.
+
+Documentation-checkpoint validation (2026-10-05): reran offline suites only — 3,708 reader assertions/86 scenarios, 177 foundation checks and 36/36 fixture comparisons PASSED, plus git diff --check. Both harness scripts remained byte-identical; no remote rerun, SQL, Auth/database operation or environment changes. Offline NOT RUN messages refer to the test invocation, not the owner's completed remote run. No TypeScript/build rerun for this documentation-only update; those prior results are historical.
 
 ```powershell
 npm run verify:supabase
@@ -94,8 +140,8 @@ No CLI installation or linking was needed for the owner-run Dashboard migration 
 
 ## Remaining gates after separate approval
 
-1. Prepare a read-only HTTP/JWT reader-access verification plan for the NEW project. This is the single proposed next task, awaiting approval in NEXT_TASK.md; do not implement auth or run requests in this checkpoint.
-2. Any future execution needs its own approval, safe normal-user token handling and redacted outputs. Empty tables/read-only requests cannot prove positive public-record visibility or every identity-dependent policy; record those limits rather than seed data or rerun V2.
+1. Anonymous harness implementation, final static review and owner-controlled anonymous HTTP run are complete within their stated scope (PASS 108/108). NEXT_TASK.md now contains one PROPOSED planning-only task: authenticated JWT reader verification. The planning task has not started; it does not authorize implementation or requests.
+2. Authenticated verification remains NOT RUN. A future plan must address safe legitimate session acquisition using the existing dedicated normal test account, independent project binding, redacted output and timeout-bounded GET-only checks. No password/JWT should be requested in chat, logged or committed; no Auth operation is authorized now. Any later implementation/session/execution needs its own approval. Empty tables/read-only requests cannot prove positive public-record visibility or every identity-dependent policy; record those limits rather than seed data or rerun V2.
 3. Assess the known review-ordering/lock-order risks, missing mutation permutations and concurrency/retry scenarios before introducing an authorized writer. No service-role usage is authorized by this handoff.
 4. Review query plans/indexes; generate database types and define numeric/decimal mapping, missing-detail behavior and legacy ID/UUID routing before a read adapter. These are later separately approved tasks.
 5. Separately approve staff authorization/publication services, safe DTO projections and server-to-client loading. Keep current public pages mock-backed until their explicit integration task; mocks are not verified production seeds.
