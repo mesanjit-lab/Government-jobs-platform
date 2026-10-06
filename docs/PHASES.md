@@ -49,6 +49,8 @@ Last updated: October 2026
 - [x] Controlled anonymous HTTP projection/grant checkpoint — owner-reported PASS 108/108; zero-row approved/restricted/private/wildcard reads
 - [x] Narrower authenticated JWT acceptance/reader-grant verifier + offline tests — duplicate-JSON, terminal-cleanup and parser-resource corrections applied; no real token or acquisition/network execution
 - [x] Local-only operator acquisition runner + offline tests — no real sign-in, token or network; persistence/refresh/URL detection disabled
+- [x] Server-first public recruitment read boundary — explicit migration projection, bounded deterministic list/lookup mapping and offline tests; no page cutover
+- [ ] Integrate one server-rendered recruitment listing using the public repository — requires a separate approved cutover/error-empty-state task
 - [ ] Static security review of authenticated acquisition runner — next proposed gate before controlled normal sign-in
 - [ ] Actual authenticated JWT reader execution — NOT RUN; independent database role/auth.uid/identity coverage unavailable
 - [ ] Positive HTTP row visibility / publication filtering / auth.uid behavior verification — empty reads do not establish this

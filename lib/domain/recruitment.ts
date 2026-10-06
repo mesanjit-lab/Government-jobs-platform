@@ -140,3 +140,19 @@ export interface Recruitment extends RecruitmentContent {
   readonly publishedAt?: string
   readonly archivedAt?: string
 }
+
+// Deliberate public read shape. It excludes all publication, verification,
+// provenance, review and actor metadata even when storage contains those fields.
+export interface PublicRecruitmentSummary {
+  readonly id: RecruitmentId
+  readonly organizationId: OrganizationId
+  readonly title: string
+  readonly slug: string
+  readonly advertisementNumber?: string
+  readonly description?: string
+  readonly category?: string
+  readonly state?: string
+  readonly totalVacancies?: number
+  readonly lifecycleStatus?: RecruitmentLifecycleStatus
+  readonly howToApply?: readonly string[]
+}

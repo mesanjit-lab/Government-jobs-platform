@@ -127,3 +127,13 @@ Decision: Record the once-executed migration and corrected rollback-only TEST_MY
 Reason: Project isolation prevents unrelated application impact. SQL-role coverage proves the tested grants/policies/guards but does not establish HTTP/JWT/auth.uid identity behavior or solve known concurrency risks.
 Reviewer boundary: Use the separately approved normal Auth test account; do not directly insert synthetic auth.users records. It persists outside rollback and remained unchanged; TEST fixtures/editor membership rolled back. No service-role usage or Auth mutation occurred in the suite.
 Status: Separate project and controlled runtime checkpoint complete according to owner-supplied results. Public pages remain mock-backed; future verification/integration needs separate approval. Evidence, counts and limits are recorded in SUPABASE.md.
+
+---
+
+## ADR-014 — Server-first, projection-safe public recruitment reads
+
+Date: 2026-10-06
+Decision: Keep public Supabase recruitment reads behind a framework-neutral repository and a separate server-only composition entry point. The repository selects only the Foundation V1 granted recruitment columns, maps unknown row data into domain-level `PublicRecruitmentSummary`, returns typed success/not-found/failure outcomes, and never queries private evidence/membership tables. It has bounded list limits and stable title/UUID ordering; it is not imported by UI pages in this phase. Do not add a cache wrapper at the repository boundary yet; future page integration must choose current Next.js-supported revalidation so Admin publication can invalidate or age out reads safely.
+Reason: Pages must not own database queries, and current mock display DTOs require facts (badges, formatted dates, qualifications and legacy numeric IDs) not present in the normalized public summary. Direct conversion would invent or misrepresent data.
+Ordering limit: Foundation V1 deliberately does not grant `published_at`. The repository therefore exposes only a deterministic title/UUID display list, not a chronological newest-first API. A future approved public ordering projection/view or grant decision is needed before MyResult labels Supabase-backed results as "Latest Jobs" or makes a latest-first UI claim.
+Status: Repository boundary implemented and offline tested; public-page cutover, generated types, real content and caching/revalidation policy are deferred.
