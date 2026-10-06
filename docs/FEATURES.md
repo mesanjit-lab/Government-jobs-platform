@@ -58,6 +58,7 @@ Legend:
 [x] Narrower authenticated reader verifier + offline tests — JWT acceptance/reader grants only; duplicate/terminal/parser-resource static-review corrections applied
 [x] Local operator-only authenticated acquisition runner + offline tests — one normal reviewer sign-in only when separately executed; concealed local password, no persistent session/token storage; static security review pending
 [x] Server-first public recruitment read boundary — explicit safe projection, bounded list/lookup mapping and offline tests; pages remain mock-backed
+[x] Chronological public-listing contract — local-only forward migration, public `listedAt` mapping and newest-first ordering; migration not deployed and pages remain mock-backed
 [ ] Actual authenticated JWT/HTTP execution — NOT RUN; dedicated account/offline signatures do not verify the deployed boundary
 [ ] Positive row visibility / HTTP publication filtering / auth.uid behavior verification — not established by empty reads
 [ ] Result/Admit Card/Answer Key lifecycle update application persistence — recruitment_updates schema deployed, writer/read integration and verified real content not implemented

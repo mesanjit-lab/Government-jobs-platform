@@ -137,3 +137,12 @@ Decision: Keep public Supabase recruitment reads behind a framework-neutral repo
 Reason: Pages must not own database queries, and current mock display DTOs require facts (badges, formatted dates, qualifications and legacy numeric IDs) not present in the normalized public summary. Direct conversion would invent or misrepresent data.
 Ordering limit: Foundation V1 deliberately does not grant `published_at`. The repository therefore exposes only a deterministic title/UUID display list, not a chronological newest-first API. A future approved public ordering projection/view or grant decision is needed before MyResult labels Supabase-backed results as "Latest Jobs" or makes a latest-first UI claim.
 Status: Repository boundary implemented and offline tested; public-page cutover, generated types, real content and caching/revalidation policy are deferred.
+
+---
+
+## ADR-015 — First MyResult public-listing time defines newest-first jobs
+
+Date: 2026-10-06
+Decision: Use the existing `recruitments.published_at` as the immutable first timestamp at which MyResult makes a verified recruitment public. A forward migration, pending separate review/execution, requires an empty recruitment table rather than inferring historic values; it assigns the timestamp in the database on first valid publication, preserves it across corrections, withdrawal and republishing, grants it as narrow public metadata, and supports `published_at DESC, id DESC` reads. Public adapters call it `listedAt` to distinguish it from an authority's official-notification date.
+Reason: “Latest Jobs” must mean most recently listed by MyResult, not most recently edited, created, source-captured, opened for applications or officially announced. This is editorially controllable, stable across corrections and compatible with a future `(published_at, id)` keyset cursor.
+Limits: This does not model an official notification date, relist-as-new behavior, public updates, UI cutover or caching. The migration is local-only and NOT deployed; all public pages remain mock-backed.

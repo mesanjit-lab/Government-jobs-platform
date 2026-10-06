@@ -1,10 +1,10 @@
-import type { PublicRecruitmentSummary, RecruitmentId, RecruitmentLifecycleStatus } from "../domain/recruitment";
+import type { ISODateTime, PublicRecruitmentSummary, RecruitmentId, RecruitmentLifecycleStatus } from "../domain/recruitment";
 
 // Exact public SELECT grant from the foundation migration. Never add workflow,
 // verification, provenance, review, or actor fields here.
 export const PUBLIC_RECRUITMENT_PROJECTION = [
   "id", "organization_id", "title", "slug", "advertisement_number", "description",
-  "category", "state", "total_vacancies", "lifecycle_status", "how_to_apply",
+  "category", "state", "total_vacancies", "lifecycle_status", "how_to_apply", "published_at",
 ].join(",");
 
 export const DEFAULT_PUBLIC_RECRUITMENT_LIMIT = 20;
@@ -36,6 +36,7 @@ export interface PublicRecruitmentClient {
 
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const timestampPattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})$/;
 const lifecycleStatuses = new Set<RecruitmentLifecycleStatus>([
   "upcoming", "open", "closed", "in_progress", "completed", "cancelled",
 ]);
@@ -48,10 +49,18 @@ function optionalText(value: unknown): string | undefined | null {
   return value === null || value === undefined ? undefined : typeof value === "string" ? value : null;
 }
 
+function publicListingTimestamp(value: unknown): ISODateTime | undefined {
+  return typeof value === "string" && timestampPattern.test(value) && Number.isFinite(Date.parse(value))
+    ? value
+    : undefined;
+}
+
 function mapPublicRecruitment(row: unknown): PublicRecruitmentSummary | undefined {
   if (!isRecord(row) || typeof row.id !== "string" || !uuidPattern.test(row.id) ||
       typeof row.organization_id !== "string" || !uuidPattern.test(row.organization_id) ||
       typeof row.title !== "string" || !row.title.trim() || typeof row.slug !== "string" || !slugPattern.test(row.slug)) return undefined;
+  const listedAt = publicListingTimestamp(row.published_at);
+  if (!listedAt) return undefined;
   const advertisementNumber = optionalText(row.advertisement_number);
   const description = optionalText(row.description);
   const category = optionalText(row.category);
@@ -71,6 +80,7 @@ function mapPublicRecruitment(row: unknown): PublicRecruitmentSummary | undefine
     organizationId: row.organization_id,
     title: row.title,
     slug: row.slug,
+    listedAt,
     ...(advertisementNumber ? { advertisementNumber } : {}),
     ...(description ? { description } : {}),
     ...(category ? { category } : {}),
@@ -103,15 +113,14 @@ function singleResult(response: PublicRecruitmentQueryResponse): PublicRecruitme
 }
 
 export function createPublicRecruitmentRepository(client: PublicRecruitmentClient) {
-  // `published_at` is intentionally ungranted. Title + UUID provides only a
-  // bounded deterministic display order in Foundation V1, not recency.
+  // `published_at` is the immutable first MyResult public-listing timestamp.
   const listPublishedRecruitments = async (limit = DEFAULT_PUBLIC_RECRUITMENT_LIMIT) => {
     if (!validLimit(limit)) return { kind: "failure", reason: "invalid_request" } as const;
     try {
       const response = await client.from("recruitments")
         .select(PUBLIC_RECRUITMENT_PROJECTION)
-        .order("title", { ascending: true })
-        .order("id", { ascending: true })
+        .order("published_at", { ascending: false })
+        .order("id", { ascending: false })
         .limit(limit);
       return listResult(response);
     } catch {

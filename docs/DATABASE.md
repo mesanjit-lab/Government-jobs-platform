@@ -75,7 +75,7 @@ Workflow columns in the local migration on recruitments (and independently on up
 
 - publication_state defaults draft; verification_state defaults unverified.
 - content_version starts at 1; every content/child/provenance edit increments it transactionally.
-- verified_version, verified_by (auth.users FK), verified_at, published_at, archived_at nullable.
+- verified_version, verified_by (auth.users FK), verified_at, published_at, archived_at nullable. `published_at` is the immutable first time MyResult publicly listed a verified recruitment, not an official authority-notification date. A local forward migration will assign it database-side on first publication and preserve it through corrections, withdrawal and republishing; that migration is not deployed yet.
 - created_by / updated_by reference auth.users where an authenticated writer exists. Automated drafts must record their approved service origin separately, not forge a human actor.
 - A trusted human verification action records reviewer, timestamp, evidence and the exact content_version; AI extraction alone cannot set verification.
 - Publication requires authorization, a resolvable organization, stable public identity, official-source evidence and verified_version = content_version. All required factual checks remain human/editorial work; structural validation alone is insufficient.
@@ -124,6 +124,10 @@ The implemented validator accepts a complete editable-content snapshot for creat
 Input validation trims text, validates identifiers/counts/calendar dates/URLs/fee syntax/enums, rejects unknown fields (including verification/publication/audit flags), checks nested shapes and same-payload references. It does not compare government facts, add universal relaxation rules, assume category counts sum to a total, fetch URLs, check official domains, provide SSRF protection for a future fetcher, authorize users or write anything. Future endpoints also need payload-size limits and safe text handling.
 
 Read selectors currently remain synchronous and mock-backed. Their display DTOs and supported detail IDs are unchanged. A future server-only adapter must map normalized domain data to these DTOs, explicitly handle incomplete details, and load safe projections for client components. Switching synchronous imports to request-scoped server loading is an integration step; this batch does not pretend an async Supabase client is a drop-in implementation.
+
+## Public chronological listing contract (local migration pending execution)
+
+`supabase/migrations/20261006000100_public_recruitment_listing_order.sql` takes an ACCESS EXCLUSIVE lock before requiring an empty `public.recruitments` table and stops if that precondition is not met; this closes a trusted-writer race and does not invent historical first-listing timestamps. It installs a trigger that assigns `published_at` from the database only on first valid publication, preserves it thereafter, revokes direct execution of that trigger helper from reader roles, grants only that field as public recruitment metadata, and adds `published_at DESC, id DESC` ordering support. Existing RLS remains authoritative and retains the `published_at <= now()` safeguard. Public adapters expose this as `listedAt`; it is not an official notification date. Future newest-first reads use `published_at DESC, id DESC`, with a future keyset cursor `(published_at, id)`. The migration is local text only and has NOT been executed; public pages remain mock-backed and `/jobs` is the recommended first cutover after execution verification.
 
 ## Migration implementation and verified execution limits
 

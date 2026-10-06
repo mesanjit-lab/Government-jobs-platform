@@ -8,7 +8,8 @@ const row = Object.freeze({
   id, organization_id: organizationId, title: "Published recruitment", slug: "published-recruitment",
   advertisement_number: "Notice/2026", description: "Public description", category: "Central", state: "All India",
   total_vacancies: 42, lifecycle_status: "open", how_to_apply: ["Read the notice", "Apply online"],
-  publication_state: "draft", verification_state: "unverified", verified_by: "private", published_at: "private",
+  published_at: "2026-10-06T10:00:00+00:00",
+  publication_state: "draft", verification_state: "unverified", verified_by: "private",
 });
 let assertions = 0;
 let stage = "projection";
@@ -27,7 +28,11 @@ function mock(response, calls = [], throwOnQuery = false) {
 
 try {
   check(() => assert.ok(!PUBLIC_RECRUITMENT_PROJECTION.includes("*")));
-  for (const privateColumn of ["publication_state", "verification_state", "verified_by", "published_at", "created_by", "updated_by"]) {
+  check(() => assert.deepEqual(PUBLIC_RECRUITMENT_PROJECTION.split(","), [
+    "id", "organization_id", "title", "slug", "advertisement_number", "description",
+    "category", "state", "total_vacancies", "lifecycle_status", "how_to_apply", "published_at",
+  ]));
+  for (const privateColumn of ["publication_state", "verification_state", "verified_by", "created_by", "updated_by"]) {
     check(() => assert.ok(!PUBLIC_RECRUITMENT_PROJECTION.includes(privateColumn)));
   }
   check(() => assert.equal(DEFAULT_PUBLIC_RECRUITMENT_LIMIT, 20));
@@ -40,7 +45,7 @@ try {
   check(() => assert.equal(result.kind, "success"));
   if (result.kind === "success") {
     check(() => assert.deepEqual(result.data[0], {
-      id, organizationId, title: "Published recruitment", slug: "published-recruitment", advertisementNumber: "Notice/2026",
+      id, organizationId, title: "Published recruitment", slug: "published-recruitment", listedAt: "2026-10-06T10:00:00+00:00", advertisementNumber: "Notice/2026",
       description: "Public description", category: "Central", state: "All India", totalVacancies: 42,
       lifecycleStatus: "open", howToApply: ["Read the notice", "Apply online"],
     }));
@@ -48,8 +53,8 @@ try {
     check(() => assert.equal("verified_by" in result.data[0], false));
   }
   check(() => assert.deepEqual(listed.calls, [
-    ["from", "recruitments"], ["select", PUBLIC_RECRUITMENT_PROJECTION], ["order", "title", { ascending: true }],
-    ["order", "id", { ascending: true }], ["limit", DEFAULT_PUBLIC_RECRUITMENT_LIMIT],
+    ["from", "recruitments"], ["select", PUBLIC_RECRUITMENT_PROJECTION], ["order", "published_at", { ascending: false }],
+    ["order", "id", { ascending: false }], ["limit", DEFAULT_PUBLIC_RECRUITMENT_LIMIT],
   ]));
 
   stage = "limits";
@@ -86,10 +91,13 @@ try {
   const malformed = mock({ data: [{ ...row, slug: null }], error: null });
   const malformedResult = await createPublicRecruitmentRepository(malformed.client).listPublishedRecruitments(1);
   check(() => assert.deepEqual(malformedResult, { kind: "failure", reason: "malformed_data" }));
+  const malformedTimestamp = mock({ data: [{ ...row, published_at: "not-a-timestamp" }], error: null });
+  const malformedTimestampResult = await createPublicRecruitmentRepository(malformedTimestamp.client).listPublishedRecruitments(1);
+  check(() => assert.deepEqual(malformedTimestampResult, { kind: "failure", reason: "malformed_data" }));
   stage = "private-field exclusion";
-  const privateOnly = mock({ data: { id, organization_id: organizationId, title: "x", slug: "x", publication_state: "published" }, error: null });
+  const privateOnly = mock({ data: { id, organization_id: organizationId, title: "x", slug: "x", published_at: "2026-10-06T10:00:00Z", publication_state: "published" }, error: null });
   const privateOnlyResult = await createPublicRecruitmentRepository(privateOnly.client).getPublishedRecruitmentById(id);
-  check(() => assert.deepEqual(privateOnlyResult, { kind: "success", data: { id, organizationId, title: "x", slug: "x" } }));
+  check(() => assert.deepEqual(privateOnlyResult, { kind: "success", data: { id, organizationId, title: "x", slug: "x", listedAt: "2026-10-06T10:00:00Z" } }));
   stage = "database error";
   const databaseError = mock({ data: null, error: { message: "private database detail" } });
   const databaseErrorResult = await createPublicRecruitmentRepository(databaseError.client).getPublishedRecruitmentById(id);

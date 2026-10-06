@@ -4,6 +4,7 @@ export type OrganizationId = string
 export type PostId = string
 export type SourceId = string
 export type ISODate = string // YYYY-MM-DD calendar date, not a timestamp
+export type ISODateTime = string // ISO 8601 instant from a trusted timestamp column
 export type DecimalAmount = string // Non-negative decimal, at most two fractional digits
 
 export const recruitmentLifecycleStatuses = ['upcoming', 'open', 'closed', 'in_progress', 'completed', 'cancelled'] as const
@@ -148,6 +149,8 @@ export interface PublicRecruitmentSummary {
   readonly organizationId: OrganizationId
   readonly title: string
   readonly slug: string
+  // First time MyResult made this verified recruitment public; not an official notice date.
+  readonly listedAt: ISODateTime
   readonly advertisementNumber?: string
   readonly description?: string
   readonly category?: string
