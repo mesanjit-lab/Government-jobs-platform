@@ -48,7 +48,8 @@ Last updated: October 2026
 - [x] Anonymous HTTP reader harness Phase 1 + offline safety tests — no application auth integration
 - [x] Controlled anonymous HTTP projection/grant checkpoint — owner-reported PASS 108/108; zero-row approved/restricted/private/wildcard reads
 - [x] Narrower authenticated JWT acceptance/reader-grant verifier + offline tests — duplicate-JSON, terminal-cleanup and parser-resource corrections applied; no real token or acquisition/network execution
-- [ ] Static security review of authenticated harness — next proposed gate before session acquisition
+- [x] Local-only operator acquisition runner + offline tests — no real sign-in, token or network; persistence/refresh/URL detection disabled
+- [ ] Static security review of authenticated acquisition runner — next proposed gate before controlled normal sign-in
 - [ ] Actual authenticated JWT reader execution — NOT RUN; independent database role/auth.uid/identity coverage unavailable
 - [ ] Positive HTTP row visibility / publication filtering / auth.uid behavior verification — empty reads do not establish this
 - [ ] Organizations/recruitments + owned content tables + verified real data
@@ -103,7 +104,7 @@ Last updated: October 2026
 
 Standalone recruitment structural validation exists from Phase 3 preparation; production server enforcement and other input contracts remain pending.
 
-Owner-reported SQL-role PASS 270/270 and anonymous HTTP PASS 108/108 remain bounded checkpoints. Narrower authenticated harness is implemented/offline-tested, not remotely executed: no real token or sign-in/out/refresh. It does not independently prove database role/auth.uid, identity RLS, ownership/staff authorization, positive visibility, HTTP writes or application sessions. Known concurrency/review-ordering risks remain. No migration/V2/anonymous rerun or old AI Test Platform contact. Phase 3 remains incomplete: public pages mock-backed, verified content/read adapters and Admin/authorization services absent. See SUPABASE.md; NEXT_TASK.md proposes static security review before any separately approved acquisition/execution.
+Owner-reported SQL-role PASS 270/270 and anonymous HTTP PASS 108/108 remain bounded checkpoints. Narrower authenticated verifier and local-only acquisition runner are implemented/offline-tested, not remotely executed: no real token or sign-in/out/refresh. A future runner execution may perform one normal sign-in and update Auth audit/session metadata, but it does not establish application sessions. The boundary does not independently prove database role/auth.uid, identity RLS, ownership/staff authorization, positive visibility or HTTP writes. Known concurrency/review-ordering risks remain. No migration/V2/anonymous rerun or old AI Test Platform contact. Phase 3 remains incomplete: public pages mock-backed, verified content/read adapters and Admin/authorization services absent. See SUPABASE.md; NEXT_TASK.md proposes static security review before any separately approved acquisition/execution.
 
 ---
 

@@ -4,41 +4,31 @@ Last updated: 2026-10-05
 
 ## Status
 
-PROPOSED — awaiting explicit owner approval. This file is not authorization to start, implement or execute the next task.
+PROPOSED — awaiting explicit owner approval. This file is not authorization to execute authentication or remote verification.
 
-## Task: Static security review of the authenticated reader verifier
+## Task: Static security review of the authenticated acquisition runner
 
 ### Starting checkpoint
 
-- Committed HEAD: `6b88e297917437994f3b38f23c9d13b6fb695454 test: verify anonymous Supabase reader access`.
-- Separate NEW `myresult` Supabase project configured; publishable connectivity passed.
-- Foundation migration executed once; 17 tables deployed. Owner reports corrected rollback-only TEST_MYRESULT_RLS_V2 PASS, 270 assertions, all fixtures rolled back and foundation tables empty afterward.
-- Owner reports one controlled anonymous HTTP run PASS: planned/completed/passed 108/108/108; approved 14, excluded 52, private 25, wildcard 17; ok true, firstNonPass null. Authenticated NOT RUN. The zero-row test does not independently recheck table emptiness or positive record visibility.
-- Public application remains mock-backed. Application authentication, Admin, staff authorization and Supabase read adapters are not implemented.
-- Owner approved the narrower JWT ACCEPTANCE + AUTHENTICATED HTTP READER GRANTS boundary. Separate verifier/offline tests are now implemented, awaiting static review/checkpointing; actual authenticated execution NOT RUN. No real token acquired or sign-in/out/refresh performed.
-- SQL-role verification does not establish HTTP/JWT/auth.uid behavior. Known review-ordering and concurrent lock-order risks remain.
+- Committed HEAD before this uncommitted batch: `d247a31 test: add authenticated Supabase reader verifier`.
+- Separate NEW `myresult` project is configured locally; public pages remain mock-backed.
+- The narrower verifier and the separate local operator runner are implemented and offline-tested only. Real sign-in, token acquisition and authenticated HTTP verification are NOT RUN.
+- The runner may later make exactly one normal reviewer `signInWithPassword` call only after this review and separate execution approval. It must not use service role, query `auth.users`, refresh, logout, write database data, create editor membership, or contact the old AI Test Platform project.
 
-### Scope of the proposed static review
+### Scope
 
-1. Read both complete new authenticated scripts, unchanged anonymous harness, committed migration and relevant docs. Verify manifest reuse/counts: 91/108 readers plus two controls and one JWKS check = 94/111 planned checks.
-2. Audit concealed TTY intake, no argv/env/file token source, terminal cleanup, bounded claims/segments, exact expected subject and independently pinned project/issuer.
-3. Audit native ES256/RS256 public-key verification and pinned GET-only JWKS discovery. No token-directed URLs, signing-secret requests, SDK getUser fallback or Auth user queries; unsupported keys/configuration must stop.
-4. Audit both invalid-token controls on the same fixed approved zero-row endpoint, strict JWT-error recognition and no anonymous fallback. A successful public read alone is insufficient.
-5. Audit output/exception/CLI secrecy with synthetic canaries, GET-only paths, sequential/no-retry/fail-fast behavior, redirects/body/deadline bounds and offline test coverage. No network or session acquisition during review.
-6. Report APPROVE/DO NOT APPROVE with defects/minimal corrections and honest narrower coverage limits. Approval does not itself authorize session acquisition/cleanup or remote execution; those need separate explicit approval.
+1. Read `scripts/run-supabase-authenticated-reader.mjs`, its offline checker, the committed verifier/checker, environment helper and relevant documentation.
+2. Confirm email/password are interactive local TTY inputs only; password is concealed and never accepted from argv/env/file/pipe/source/history.
+3. Confirm SDK options are exactly `persistSession:false`, `autoRefreshToken:false`, `detectSessionInUrl:false`, with no application-client change or persistent credential/session storage.
+4. Confirm at most one `signInWithPassword` call, exact user/session reviewer UUID matching, generic/redacted errors and in-memory-only access-token handoff to the unchanged verifier.
+5. Confirm verifier flags/project pin/JWT signature/reader matrix/invalid-token controls remain enforced, with no endpoint or token override/fallback.
+6. Review synthetic offline tests for wrong identity, missing session/token, sign-in error, disabled persistence, forbidden methods, output canaries and zero real network. Report APPROVE/DO NOT APPROVE; do not execute Auth/network/SQL.
 
 ### Exclusions
 
-- No file/code changes during review unless a separate correction task is approved. No application/auth implementation, public-page cutover, Admin CMS, session-acquisition helper, Auth operations, database writes, fixtures, dependency changes or schema/policy/grant changes.
-- Do not rerun the migration, completed V2 suite or anonymous HTTP verification.
+- No real sign-in, credentials in chat, token/password output, `.env.local` modification, SQL, migration/V2/anonymous rerun, database mutation, application auth/UI, dependency change, service-role, Auth admin API, commit or push.
 - Do not contact, inspect, modify or clean the old AI Test Platform project.
-- Do not modify or commit `.env.local`; accepted public names are NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY. Never print their values or any JWT/password/key.
-- Do not start unrelated advisory remediation or concurrency work; those remain separately scoped future tasks.
 
 ### Definition of done
 
-A complete static security audit with offline evidence, any defects/minimal corrections and a clear recommendation. No real token, Auth/network/database operations or implementation changes. This boundary does NOT independently prove PostgreSQL role/auth.uid, identity RLS, ownership, staff authorization, positive row visibility, HTTP writes or application sessions. Public-key validation is not session-revocation verification; normal sign-in changes Auth state and requires separate approval.
-
-### Why this comes next
-
-The narrower authenticated harness is implemented/offline-tested, but actual deployed signing-key/JWT behavior is NOT RUN. A static review must precede any real session acquisition and controlled execution. This single proposal does not authorize those steps, a session helper, application authentication, fixtures, writer/CMS or public read cutover.
+A static security verdict with any minimal corrections. Approval does not itself authorize execution. Runtime evidence must remain limited to JWT acceptance/reader grants and must not claim database-role mapping, `auth.uid`, identity RLS, ownership/staff authorization, positive row visibility, HTTP writes or application sessions.

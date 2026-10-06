@@ -6,7 +6,7 @@ Last updated: 2026-10-05
 
 ## Current Batch
 
-Offline implementation of the explicitly approved narrower JWT ACCEPTANCE + AUTHENTICATED HTTP READER GRANTS boundary. Starting HEAD: `6b88e297917437994f3b38f23c9d13b6fb695454 test: verify anonymous Supabase reader access`; master synchronized with recorded origin/master and worktree clean before editing. Separate verifier/tests only; anonymous scripts unchanged. No session-acquisition helper, real token, sign-in/out/refresh, network, SQL, database/Auth/schema/configuration change, dependency/application change, commit or push. Next gate: static security review, not execution or application auth.
+Offline implementation of the approved local-only operator acquisition runner for the narrower JWT ACCEPTANCE + AUTHENTICATED HTTP READER GRANTS boundary. Starting HEAD: `d247a31 test: add authenticated Supabase reader verifier`; master synchronized with origin/master and worktree clean before editing. The new runner is not application authentication: it prompts locally for reviewer email and a concealed password, performs at most one normal sign-in only when later executed with explicit flags, disables persistence/refresh/URL-session detection, pins the returned user ID, and hands the access token only in process memory to the separate reviewed verifier. This implementation turn performed no sign-in, token acquisition, network, SQL, database/Auth/schema/configuration change, dependency/application change, commit or push. Next gate: static security review of the acquisition runner, not execution.
 
 ## Last Agent
 
@@ -16,10 +16,12 @@ Codex
 
 - scripts/verify-supabase-authenticated-reader.mjs (new) — separate operator verifier; concealed TTY intake, pinned public-key/claim validation, reused reader manifest, paired invalid-token controls, bounded/redacted GET-only checks; no SDK or Auth user query.
 - scripts/check-supabase-authenticated-reader.mjs (new) — generated synthetic keys/JWTs, mocked HTTP, manifest/secret/CLI/intake regressions; no .env.local or real network.
-- docs/SUPABASE.md — narrower scope, intake/signature/control design, counts, limitations and review gates.
+- scripts/run-supabase-authenticated-reader.mjs (new) — local operator-only reviewer-email/concealed-password runner; creates an SDK client only with `persistSession:false`, `autoRefreshToken:false`, and `detectSessionInUrl:false`; allows one `signInWithPassword`, exact reviewer-ID validation, then an in-memory verifier handoff. No application import, storage, refresh, service-role, SQL or Admin capability.
+- scripts/check-supabase-authenticated-runner.mjs (new) — synthetic mocked Auth/verifier/TTY checks for accepted/rejected identity/session/token cases, one-call enforcement, disabled persistence/refresh/URL detection, argument/project preservation and redacted failure paths; zero real network requests.
+- docs/SUPABASE.md — narrower scope, verifier/acquisition-runner design, counts, limitations and review gates.
 - docs/FEATURES.md / docs/PHASES.md — offline harness implemented; actual authenticated execution NOT RUN; Phase 3/public integration incomplete.
 - MEMORY.md — implementation/checks and preserved prior checkpoint history.
-- NEXT_TASK.md — one proposed static security review before any session acquisition; not acquisition/execution approval.
+- NEXT_TASK.md — one proposed static security review of the new acquisition runner; not execution approval.
 
 ## Current Verified Foundation Checkpoint
 

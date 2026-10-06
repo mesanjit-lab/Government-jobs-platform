@@ -55,7 +55,8 @@ Legend:
 [x] Normalized foundation schema deployed once — 17 tables; owner-reported rollback-only SQL-role RLS suite PASS, 270 assertions; fixtures rolled back and foundation tables empty afterward
 [x] Anonymous HTTP reader verification harness + offline safety tests — operator-only, no application integration
 [x] Controlled anonymous HTTP projection/grant verification — owner-reported PASS 108/108 (14 approved, 52 excluded, 25 private, 17 wildcard); zero-row reads only
-[x] Narrower authenticated reader verifier + offline tests — JWT acceptance/reader grants only; duplicate/terminal/parser-resource static-review corrections applied, awaiting final review, no session acquisition
+[x] Narrower authenticated reader verifier + offline tests — JWT acceptance/reader grants only; duplicate/terminal/parser-resource static-review corrections applied
+[x] Local operator-only authenticated acquisition runner + offline tests — one normal reviewer sign-in only when separately executed; concealed local password, no persistent session/token storage; static security review pending
 [ ] Actual authenticated JWT/HTTP execution — NOT RUN; dedicated account/offline signatures do not verify the deployed boundary
 [ ] Positive row visibility / HTTP publication filtering / auth.uid behavior verification — not established by empty reads
 [ ] Result/Admit Card/Answer Key lifecycle update application persistence — recruitment_updates schema deployed, writer/read integration and verified real content not implemented
@@ -135,4 +136,4 @@ Legend:
 [~] Environment variables configured — ignored local MyResult publishable configuration only; deployment/Vercel configuration not verified
 [ ] CI/CD pipeline
 
-SQL-role and anonymous HTTP checkpoints remain owner-reported PASS 270/270 and 108/108. Narrower authenticated verifier/offline tests implemented, not remotely executed or application auth. Public pages remain mock-backed; known concurrency/review-ordering risks and dev-tooling advisory unchanged. No migration/V2/anonymous rerun or session acquisition authorized. NEXT_TASK.md proposes static security review only. Database role/auth.uid, ownership/staff authorization, positive visibility and HTTP write/session behavior remain unverified. See SUPABASE.md for evidence/limits.
+SQL-role and anonymous HTTP checkpoints remain owner-reported PASS 270/270 and 108/108. Narrower authenticated verifier and local operator-only acquisition runner are offline-tested, not remotely executed or application auth. Public pages remain mock-backed; known concurrency/review-ordering risks and dev-tooling advisory unchanged. No migration/V2/anonymous rerun occurred. NEXT_TASK.md proposes static security review of the acquisition runner before a separately approved normal sign-in. Database role/auth.uid, ownership/staff authorization, positive visibility and HTTP write/session behavior remain unverified. See SUPABASE.md for evidence/limits.
