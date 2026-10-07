@@ -49,6 +49,7 @@ const {
   readerManifest, anonymousChecks, buildReaderRequest,
   classifyReaderResponse, verifyAnonymousReaders, readerReport,
 } = await import("./verify-supabase-readers.mjs");
+const { PUBLIC_RECRUITMENT_PROJECTION } = await import("../lib/repositories/public-recruitments.ts");
 function redacted(value) {
   const text = JSON.stringify(value);
   cleanOutput(text);
@@ -62,11 +63,17 @@ function redacted(value) {
 }
 
 // Compare every explicit column with the actual local migration; no SQL execution.
-const sql = readFileSync(new URL("../supabase/migrations/20261002000100_recruitment_foundation.sql", import.meta.url), "utf8");
-const definitions = new Map([...sql.matchAll(/create table public\.(\w+) \(([\s\S]*?)\n\);/g)]
+const foundationSql = readFileSync(new URL("../supabase/migrations/20261002000100_recruitment_foundation.sql", import.meta.url), "utf8");
+const orderingSql = readFileSync(new URL("../supabase/migrations/20261006000100_public_recruitment_listing_order.sql", import.meta.url), "utf8");
+const definitions = new Map([...foundationSql.matchAll(/create table public\.(\w+) \(([\s\S]*?)\n\);/g)]
   .map((match) => [match[1], [...match[2].matchAll(/^  (?!unique\b|check\b|foreign\b|primary\b)(\w+) /gm)].map((column) => column[1])]));
-const grants = new Map([...sql.matchAll(/grant select \(([\s\S]*?)\) on public\.(\w+) to anon, authenticated;/g)]
-  .map((match) => [match[2], match[1].split(",").map((column) => column.trim())]));
+const grants = new Map();
+for (const sql of [foundationSql, orderingSql]) {
+  for (const match of sql.matchAll(/grant select \(([\s\S]*?)\) on public\.(\w+) to anon, authenticated;/g)) {
+    const columns = match[1].split(",").map((column) => column.trim());
+    grants.set(match[2], [...new Set([...(grants.get(match[2]) ?? []), ...columns])]);
+  }
+}
 check(() => assert.equal(definitions.size, 17));
 check(() => assert.equal(grants.size, 14));
 check(() => assert.deepEqual(readerManifest.map((entry) => entry.table).sort(), [...definitions.keys()].sort()));
@@ -82,13 +89,17 @@ check(() => assert.ok(Object.isFrozen(readerManifest)));
 check(() => assert.throws(() => readerManifest[0].restricted.push("fake"), TypeError));
 const baseChecks = anonymousChecks();
 const wildcardChecks = anonymousChecks(true);
-check(() => assert.equal(baseChecks.length, 91));
-check(() => assert.equal(wildcardChecks.length, 108));
-for (const [category, count] of [["approved", 14], ["excluded", 52], ["private", 25], ["wildcard", 17]]) {
+check(() => assert.equal(baseChecks.length, 90));
+check(() => assert.equal(wildcardChecks.length, 107));
+for (const [category, count] of [["approved", 14], ["excluded", 51], ["private", 25], ["wildcard", 17]]) {
   check(() => assert.equal(wildcardChecks.filter((item) => item.category === category).length, count));
 }
 check(() => assert.deepEqual(readerManifest.filter((entry) => !entry.approved.length).map((entry) => entry.table).sort(),
   ["editor_memberships", "recruitment_reviews", "recruitment_sources"]));
+const recruitmentManifest = readerManifest.find((entry) => entry.table === "recruitments");
+check(() => assert.ok(recruitmentManifest.approved.includes("published_at")));
+check(() => assert.ok(!recruitmentManifest.restricted.includes("published_at")));
+check(() => assert.equal(recruitmentManifest.approved.join(","), PUBLIC_RECRUITMENT_PROJECTION));
 check(() => assert.ok(!readerManifest.find((entry) => entry.table === "recruitment_reviews").restricted.includes("created_at")));
 check(() => assert.ok(!readerManifest.find((entry) => entry.table === "recruitment_salary").approved.includes("id")));
 check(() => assert.ok(!readerManifest.find((entry) => entry.table === "post_vacancy_counts").approved.includes("id")));
@@ -230,11 +241,11 @@ try {
     check(() => assert.equal(result.status, "PASS"));
     check(() => assert.equal(result.ok, true));
     check(() => assert.equal(result.authenticated, "NOT RUN"));
-    check(() => assert.equal(result.completed, includeWildcards ? 108 : 91));
+    check(() => assert.equal(result.completed, includeWildcards ? 107 : 90));
     check(() => assert.equal(result.passed, result.planned));
     check(() => assert.equal(readerReport(result).firstNonPass, null));
     check(() => assert.equal(mockedRequests, result.planned));
-    check(() => assert.deepEqual(result.categories, { approved: 14, excluded: 52, private: 25, wildcard: includeWildcards ? 17 : 0 }));
+    check(() => assert.deepEqual(result.categories, { approved: 14, excluded: 51, private: 25, wildcard: includeWildcards ? 17 : 0 }));
     redacted(result);
   }
   // All failed/inconclusive cases stop immediately, with no retry or raw errors.
@@ -321,9 +332,9 @@ try {
     [cliFlags, `https://${otherRef}.supabase.co`, fakeKey, "blocked", "FAIL", 0],
     [cliFlags, "invalid " + sensitive, fakeKey, "blocked", "FAIL", 0],
     [cliFlags, fakeUrl, "", "blocked", "FAIL", 0],
-    [cliFlags, fakeUrl, fakeKey, "pass401", "PASS", 91],
-    [cliFlags, fakeUrl, fakeKey, "pass403", "PASS", 91],
-    [[...cliFlags, "--include-wildcards"], fakeUrl, fakeKey, "pass403", "PASS", 108],
+    [cliFlags, fakeUrl, fakeKey, "pass401", "PASS", 90],
+    [cliFlags, fakeUrl, fakeKey, "pass403", "PASS", 90],
+    [[...cliFlags, "--include-wildcards"], fakeUrl, fakeKey, "pass403", "PASS", 107],
     [cliFlags, fakeUrl, fakeKey, "deny", "FAIL", 1],
     [cliFlags, fakeUrl, fakeKey, "throw", "INCONCLUSIVE", 1],
   ]) {
@@ -374,5 +385,5 @@ try {
   process.stderr.write = originalStderr;
 }
 console.log(`${checks} offline reader harness checks passed across ${scenarios} classification/runner/CLI scenarios; zero real network requests.`);
-console.log("Manifest matches 17 migration tables: 14 approved projections, 52 excluded columns, 25 private columns; 17 optional wildcards.");
+console.log("Manifest matches 17 migration tables: 14 approved projections, 51 excluded columns, 25 private columns; 17 optional wildcards.");
 console.log("Remote anonymous verification NOT RUN; authenticated JWT verification NOT RUN. No SQL/Auth/data mutations.");

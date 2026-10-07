@@ -7,7 +7,7 @@ import { getSupabasePublicEnv, parseSupabasePublicEnv } from "../lib/supabase/en
 const columns = (value) => Object.freeze(value.split(","));
 export const readerManifest = Object.freeze([
   { table: "organizations", approved: columns("id,name,short_name,official_url"), restricted: columns("archived_at,created_at,updated_at") },
-  { table: "recruitments", approved: columns("id,organization_id,title,slug,advertisement_number,description,category,state,total_vacancies,lifecycle_status,how_to_apply"), restricted: columns("publication_state,verification_state,content_version,verified_version,verified_by,verified_at,published_at,archived_at,created_by,updated_by,created_at,updated_at") },
+  { table: "recruitments", approved: columns("id,organization_id,title,slug,advertisement_number,description,category,state,total_vacancies,lifecycle_status,how_to_apply,published_at"), restricted: columns("publication_state,verification_state,content_version,verified_version,verified_by,verified_at,archived_at,created_by,updated_by,created_at,updated_at") },
   { table: "recruitment_posts", approved: columns("id,recruitment_id,title,count,position"), restricted: columns("created_at,updated_at") },
   { table: "post_vacancy_counts", approved: columns("post_id,category,count"), restricted: columns("created_at,updated_at") },
   { table: "recruitment_eligibility_rules", approved: columns("id,recruitment_id,post_id,qualification,minimum_age,maximum_age,age_cutoff_date,notes,position"), restricted: columns("created_at,updated_at") },

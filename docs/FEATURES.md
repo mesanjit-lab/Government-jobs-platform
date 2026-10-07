@@ -54,7 +54,7 @@ Legend:
 [x] Local Supabase packages, lazy public env contract, browser/request-scoped server factories and operator read-check script
 [x] Normalized foundation schema deployed once — 17 tables; owner-reported rollback-only SQL-role RLS suite PASS, 270 assertions; fixtures rolled back and foundation tables empty afterward
 [x] Anonymous HTTP reader verification harness + offline safety tests — operator-only, no application integration
-[x] Controlled anonymous HTTP projection/grant verification — owner-reported PASS 108/108 (14 approved, 52 excluded, 25 private, 17 wildcard); zero-row reads only
+[x] Controlled anonymous HTTP projection/grant verification — independently project-bound owner-reported PASS 107/107 for the deployed `published_at` grant (14 approved, 51 excluded, 25 private, 17 wildcard; 90 mandatory); zero-row reads only
 [x] Narrower authenticated reader verifier + offline tests — JWT acceptance/reader grants only; duplicate/terminal/parser-resource static-review corrections applied
 [x] Local operator-only authenticated acquisition runner + offline tests — one normal reviewer sign-in only when separately executed; concealed local password, no persistent session/token storage; static security review pending
 [x] Server-first public recruitment read boundary — explicit safe projection, bounded list/lookup mapping and offline tests; pages remain mock-backed

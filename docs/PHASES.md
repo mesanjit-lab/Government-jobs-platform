@@ -46,11 +46,11 @@ Last updated: October 2026
 - [x] Supabase Foundation Phase 1 local clients/env/read-check mechanism and approved package installation
 - [x] Foundation database/RLS runtime checkpoint — 17 tables deployed; owner-reported rollback-only SQL-role suite PASS, 270 assertions, fixtures rolled back and tables empty afterward
 - [x] Anonymous HTTP reader harness Phase 1 + offline safety tests — no application auth integration
-- [x] Controlled anonymous HTTP projection/grant checkpoint — owner-reported PASS 108/108; zero-row approved/restricted/private/wildcard reads
+- [x] Controlled anonymous HTTP projection/grant checkpoint — independently project-bound owner-reported PASS 107/107 for the deployed `published_at` projection; zero-row reads only
 - [x] Narrower authenticated JWT acceptance/reader-grant verifier + offline tests — duplicate-JSON, terminal-cleanup and parser-resource corrections applied; no real token or acquisition/network execution
 - [x] Local-only operator acquisition runner + offline tests — no real sign-in, token or network; persistence/refresh/URL detection disabled
 - [x] Server-first public recruitment read boundary — explicit migration projection, bounded deterministic list/lookup mapping and offline tests; no page cutover
-- [x] Chronological public-listing contract — local-only forward migration assigns immutable first MyResult listing time and enables `published_at DESC, id DESC`; execution pending
+- [x] Chronological public-listing contract — deployed once to `myresult`; assigns immutable first MyResult listing time and enables `published_at DESC, id DESC`; UI cutover pending
 - [ ] Integrate one server-rendered recruitment listing using the public repository — requires a separate approved cutover/error-empty-state task
 - [ ] Static security review of authenticated acquisition runner — next proposed gate before controlled normal sign-in
 - [ ] Actual authenticated JWT reader execution — NOT RUN; independent database role/auth.uid/identity coverage unavailable

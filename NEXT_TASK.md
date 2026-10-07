@@ -1,27 +1,27 @@
 # NEXT_TASK.md — Single Proposed Next Task
 
-Last updated: 2026-10-06
+Last updated: 2026-10-07
 
 ## Status
 
-PROPOSED — awaiting explicit owner approval. This file is not authorization to execute a migration, contact Supabase, or switch pages to database data.
+PROPOSED — awaiting explicit owner approval. This file is not authorization to switch pages to database data.
 
-## Task: Review the chronological public-listing migration contract
+## Task: Controlled `/jobs` Supabase read cutover
 
 ### Starting checkpoint
 
-- Committed HEAD before the uncommitted batch: `1d84abe feat: add public recruitment data layer`.
-- New forward migration `20261006000100_public_recruitment_listing_order.sql` is local only and NOT deployed.
-- The public application remains mock-backed. The migration deliberately fails when `recruitments` is nonempty rather than inferring historical listing times.
+- The chronological public-listing migration is deployed and the independently project-bound anonymous zero-row reader verification passed 107/107, including the approved `published_at` projection.
+- Public pages remain mock-backed and the database remains fixture-free.
+- Authenticated JWT, positive row visibility, HTTP write denial and `auth.uid()` behavior remain outside this proposed task.
 
 ### Scope
 
-1. Review the new migration's ACCESS EXCLUSIVE lock before its empty-table precondition, trigger ordering, first-publication database assignment, immutable preservation, direct-execution revocation for the trigger helper, narrow `published_at` grant, and index.
-2. Confirm existing verification, version-bound review, archive and future-visibility RLS safeguards remain unchanged.
-3. Confirm the public repository maps only `listedAt`, rejects malformed timestamps, orders by `published_at DESC, id DESC`, and retains bounded UUID/slug reads.
-4. Confirm no page/component imports the adapter and all UI remains mock-backed.
-5. Review the focused offline migration/repository checks and existing foundation regression scope. Do not execute SQL, deploy the migration, contact Supabase, change Auth, or implement a UI cutover.
+1. Review the existing server-only public recruitment repository and integrate it only into `/jobs`, preserving explicit public projection, newest-first `(published_at, id)` order and bounded list semantics.
+2. Define reviewed loading, empty, malformed-data and redacted-error UI behavior without inventing recruitment facts or creating fixtures.
+3. Preserve unrelated pages, recruitment detail routes, Auth, Admin, RLS, schema and migrations.
+4. Keep the implementation server-first; do not expose Supabase credentials to client components or add write capability.
+5. Validate TypeScript/build and narrow UI/data-boundary regression checks before any commit. No remote SQL, Auth, service-role or data mutation is authorized.
 
 ### Definition of done
 
-Static migration-review result with any minimal corrections. After separate execution approval and verification, a later task may integrate `/jobs` first using an empty/error UX and future `(published_at, id)` keyset cursor. It must preserve mocks until an explicit cutover and must not invent facts or map legacy numeric URLs to UUIDs implicitly.
+A narrowly scoped, reviewed `/jobs` integration that uses only the public repository boundary and preserves a safe empty/error experience while the database contains no records. It must not claim that the zero-row verifier proved positive row visibility, non-null `published_at`, HTTP write denial or `auth.uid()` behavior.
