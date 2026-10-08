@@ -12,6 +12,8 @@ Verified anonymous `published_at` checkpoint: owner-reported, independently proj
 
 ## Last Agent
 
+Phase 2B public recruitment card contracts are ready for owner review: pure qualification aggregation, canonical `application_end` date resolution, complete-card eligibility, and non-numeric slug URL construction live in `lib/domain/public-recruitment-card.ts`, with an offline checker. Verified local checks: 10 card checks, 40 public repository checks, 21 listing-order checks, 3,688 reader checks, TypeScript exit 0, targeted ESLint exit 0, and `git diff --check` passed. Production build was NOT RUN because free RAM was about 0.64 GB after lint. Pagination must not filter incomplete cards after a database LIMIT; eligibility and cursor semantics require later design.
+
 Codex
 
 ## Files Changed

@@ -4,7 +4,7 @@ Last updated: 2026-10-07
 
 ## Status
 
-PROPOSED — awaiting explicit owner approval. This file is not authorization to switch pages to database data.
+PROPOSED — Phase 2B contract preparation is complete and awaiting owner approval for later repository/route work. This file is not authorization to switch pages to database data.
 
 ## Task: Controlled `/jobs` Supabase read cutover
 

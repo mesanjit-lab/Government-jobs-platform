@@ -1,0 +1,10 @@
+import assert from "node:assert/strict";
+import { summarizeQualifications, resolveApplicationDeadline, buildPublicRecruitmentDetailHref, evaluateCompleteCard } from "../lib/domain/public-recruitment-card.ts";
+const id="123e4567-e89b-42d3-a456-426614174000";
+const one=summarizeQualifications([{qualification:" Graduate ",position:2},{qualification:"graduate",position:1}]); assert.deepEqual(one,{kind:"one",values:["graduate"],display:"graduate"});
+assert.equal(summarizeQualifications([{qualification:"10th"},{qualification:"12th"}]).kind,"two"); assert.equal(summarizeQualifications([{qualification:"10th"},{qualification:"12th"},{qualification:"ITI"}]).display,"Multiple qualifications"); assert.equal(summarizeQualifications([]).kind,"missing");
+assert.deepEqual(resolveApplicationDeadline([{kind:"application_end",date:"2026-02-28"}]),{kind:"ok",value:{date:"2026-02-28"}}); assert.equal(resolveApplicationDeadline([]).kind,"missing"); assert.equal(resolveApplicationDeadline([{kind:"application_end",date:"2026-02-28"},{kind:"application_end",date:"2026-03-01"}]).kind,"ambiguous"); assert.equal(resolveApplicationDeadline([{kind:"application_end",date:"bad"}]).kind,"malformed");
+assert.equal(resolveApplicationDeadline([{kind:"application_end",date:"2026-02-30"}]).kind,"malformed");
+assert.equal(buildPublicRecruitmentDetailHref("valid-slug"),"/jobs/valid-slug"); assert.equal(buildPublicRecruitmentDetailHref("1"),undefined);
+assert.equal(evaluateCompleteCard({id,slug:"valid-slug",title:"Title",organization:{id,name:"Org"},listedAt:"2026-01-01T00:00:00Z",qualification:one,deadline:{kind:"ok"},routeReady:true}).kind,"complete");
+console.log("10 public recruitment card domain checks passed; zero network requests.");
