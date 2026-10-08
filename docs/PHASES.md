@@ -50,7 +50,8 @@ Last updated: October 2026
 - [x] Narrower authenticated JWT acceptance/reader-grant verifier + offline tests — duplicate-JSON, terminal-cleanup and parser-resource corrections applied; no real token or acquisition/network execution
 - [x] Local-only operator acquisition runner + offline tests — no real sign-in, token or network; persistence/refresh/URL detection disabled
 - [x] Server-first public recruitment read boundary — explicit migration projection, bounded deterministic list/lookup mapping and offline tests; no page cutover
-- [~] Phase 2B complete-card contract preparation — pure offline contracts/checker validated and pending owner review; production build deferred for local RAM constraints; pagination eligibility and cursor design deferred
+- [x] Phase 2B complete-card contract preparation — pure offline contracts/checker validated; pagination eligibility and cursor design deferred
+- [~] Phase 2C Batch 1 public recruitment card data readiness — explicit bounded side-loads for organization, qualification and canonical application-end data; validated complete/incomplete/failure outcomes; production build NOT RUN because of local memory constraints; no page integration, complete-card filtering or cursor design
 - [x] Chronological public-listing contract — deployed once to `myresult`; assigns immutable first MyResult listing time and enables `published_at DESC, id DESC`; UI cutover pending
 - [ ] Integrate one server-rendered recruitment listing using the public repository — requires a separate approved cutover/error-empty-state task
 - [ ] Static security review of authenticated acquisition runner — next proposed gate before controlled normal sign-in

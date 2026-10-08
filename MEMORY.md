@@ -1,6 +1,6 @@
 # MEMORY.md — Current Handoff State
 
-Last updated: 2026-10-05
+Last updated: 2026-10-08
 
 ---
 
@@ -12,7 +12,7 @@ Verified anonymous `published_at` checkpoint: owner-reported, independently proj
 
 ## Last Agent
 
-Phase 2B public recruitment card contracts are ready for owner review: pure qualification aggregation, canonical `application_end` date resolution, complete-card eligibility, and non-numeric slug URL construction live in `lib/domain/public-recruitment-card.ts`, with an offline checker. Verified local checks: 10 card checks, 40 public repository checks, 21 listing-order checks, 3,688 reader checks, TypeScript exit 0, targeted ESLint exit 0, and `git diff --check` passed. Production build was NOT RUN because free RAM was about 0.64 GB after lint. Pagination must not filter incomplete cards after a database LIMIT; eligibility and cursor semantics require later design.
+Phase 2C Batch 1 public recruitment card data readiness is ready for owner review. `lib/repositories/public-recruitment-cards.ts` retains the existing listing repository and maps exact public `organizations`, `recruitment_eligibility_rules`, and `recruitment_dates` projections through the Phase 2B card helpers. For an already bounded input list it uses exactly three batch lookups (never N+1), caps organization/child result sizes, validates unknown rows fail-closed, and returns typed complete, incomplete, or redacted failure outcomes. `lib/supabase/public-recruitment-cards.ts` is server-only; no page imports it and the public UI remains mock-backed. The focused mocked checker covers projection exclusion, missing/malformed/duplicate data, bounded query shape/count, database failures and route readiness. Verified locally: focused card repository checker, Phase 2B card checker (10), public repository checker (40), listing-order checker (21), foundation checker (177 plus 36 fixture comparisons), reader checker (3,688), TypeScript exit 0, targeted ESLint exit 0, syntax check and `git diff --check` passed. Production build was NOT RUN because this approximately 4 GB laptop has previously had critically low free RAM during validation; no concurrent heavy processes were started. This does not make a detail route real, expose a complete-card page, or solve eligibility-aware pagination/cursors; filtering incomplete cards after a database LIMIT remains prohibited.
 
 Codex
 

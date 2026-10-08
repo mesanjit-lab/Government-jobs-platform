@@ -4,9 +4,9 @@ Last updated: 2026-10-07
 
 ## Status
 
-PROPOSED — Phase 2B contract preparation is complete and awaiting owner approval for later repository/route work. This file is not authorization to switch pages to database data.
+PENDING OWNER REVIEW — Phase 2B was committed and approved at checkpoint `27b567c`. Phase 2C Batch 1 is uncommitted and awaiting owner review. This file is not authorization to switch pages to database data.
 
-## Task: Controlled `/jobs` Supabase read cutover
+## Deferred task after Batch 1 approval: Controlled `/jobs` Supabase read cutover
 
 ### Starting checkpoint
 
