@@ -4,13 +4,13 @@ import ts from "typescript";
 import * as cardDomain from "../lib/domain/public-recruitment-card.ts";
 
 function compile(source, imports) {
-  const module = { exports: {} };
+  const compiledModule = { exports: {} };
   const output = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   new Function("require", "exports", "module", output)((id) => {
     if (id in imports) return imports[id];
     throw new Error(`Unexpected runtime import: ${id}`);
-  }, module.exports, module);
-  return module.exports;
+  }, compiledModule.exports, compiledModule);
+  return compiledModule.exports;
 }
 
 const repository = compile(readFileSync(new URL("../lib/repositories/public-recruitment-cards.ts", import.meta.url), "utf8"), {
@@ -159,6 +159,16 @@ const malformedChild = await composePublicRecruitmentCards(createClient(rows({
   deadlines: [{ id: deadlineId, recruitment_id: otherRecruitmentId, kind: "application_end", date: "2026-12-31", position: 0 }],
 })), [recruitment], { routeReady: true });
 assert.deepEqual(malformedChild, { kind: "failure", reason: "malformed_data" });
+
+const malformedQualificationPosition = await composePublicRecruitmentCards(createClient(rows({
+  qualifications: [{ id: qualificationId, recruitment_id: recruitmentId, qualification: "Graduate", position: "0" }],
+})), [recruitment], { routeReady: true });
+assert.deepEqual(malformedQualificationPosition, { kind: "failure", reason: "malformed_data" });
+
+const malformedDeadlinePosition = await composePublicRecruitmentCards(createClient(rows({
+  deadlines: [{ id: deadlineId, recruitment_id: recruitmentId, kind: "application_end", date: "2026-12-31", position: -1 }],
+})), [recruitment], { routeReady: true });
+assert.deepEqual(malformedDeadlinePosition, { kind: "failure", reason: "malformed_data" });
 
 const databaseFailure = await composePublicRecruitmentCards(createClient({
   ...rows(),

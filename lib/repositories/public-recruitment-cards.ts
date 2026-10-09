@@ -82,6 +82,10 @@ function optionalTrimmedText(value: unknown): string | undefined | null {
   return trimmed || null;
 }
 
+function isNonNegativeSafeInteger(value: unknown): value is number {
+  return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
+}
+
 export function mapPublicOrganizationRow(row: unknown): PublicRecruitmentOrganization | undefined {
   if (!isRecord(row) || typeof row.id !== "string" || !uuidPattern.test(row.id)) return undefined;
   const name = optionalTrimmedText(row.name);
@@ -93,7 +97,7 @@ export function mapPublicOrganizationRow(row: unknown): PublicRecruitmentOrganiz
 function mapQualificationRow(row: unknown, recruitmentIds: ReadonlySet<string>): QualificationRow | undefined {
   if (!isRecord(row) || typeof row.id !== "string" || !uuidPattern.test(row.id) ||
       typeof row.recruitment_id !== "string" || !recruitmentIds.has(row.recruitment_id) ||
-      !Number.isSafeInteger(row.position) || row.position < 0) return undefined;
+      !isNonNegativeSafeInteger(row.position)) return undefined;
   const qualification = optionalTrimmedText(row.qualification);
   if (qualification === null) return undefined;
   return { id: row.id, recruitmentId: row.recruitment_id, ...(qualification ? { qualification } : {}), position: row.position };
@@ -102,7 +106,7 @@ function mapQualificationRow(row: unknown, recruitmentIds: ReadonlySet<string>):
 function mapApplicationEndRow(row: unknown, recruitmentIds: ReadonlySet<string>): ApplicationEndRow | undefined {
   if (!isRecord(row) || typeof row.id !== "string" || !uuidPattern.test(row.id) ||
       typeof row.recruitment_id !== "string" || !recruitmentIds.has(row.recruitment_id) ||
-      typeof row.kind !== "string" || !row.kind || !Number.isSafeInteger(row.position) || row.position < 0) return undefined;
+      typeof row.kind !== "string" || !row.kind || !isNonNegativeSafeInteger(row.position)) return undefined;
   const date = optionalTrimmedText(row.date);
   if (date === null) return undefined;
   return { id: row.id, recruitmentId: row.recruitment_id, kind: row.kind, ...(date ? { date } : {}), position: row.position };
