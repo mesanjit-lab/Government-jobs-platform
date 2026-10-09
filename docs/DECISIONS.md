@@ -155,4 +155,21 @@ Date: 2026-10-08
 Decision: Keep the existing public recruitment repository unchanged and compose card-only organization, qualification and canonical `application_end` data in a separate server-side boundary. Given an already bounded recruitment list, issue no more than three explicit-projection batch queries: one organization lookup and one query for each child candidate table. Do not use joins, broad projections, sources, reviews, memberships, reviewer identities or workflow fields. Cap child responses and fail rather than silently treating a capped response as complete.
 Reason: The Phase 2B card helpers need organization names, qualification summaries and canonical application deadlines, none of which belongs in the recruitment listing projection. Batch lookups avoid N+1 latency while preserving the Foundation's deliberate column grants and a clear public/private boundary.
 Limits: Completion is per card and requires a separately supplied detail-route readiness decision. This batch does not make a route real, filter a page to complete cards, solve eligibility-aware pagination/cursors, define cache policy or integrate any UI. Missing, malformed, ambiguous or capped data remains an explicit incomplete/failure outcome; no facts are invented.
-Status: Local-only Batch 1 implementation and mocked offline checks are complete and awaiting owner review. No application page imports this boundary.
+Status: Batch 1 was committed as `9b7af497`; its TypeScript narrowing repair was committed as `822c9b59`, for which the owner reports a successful Vercel production build/deployment. No application page imports this boundary.
+
+---
+
+## ADR-017 — Planned database-enforced complete public-card boundary
+
+Date: 2026-10-09
+Decision: For Phase 2C Batch 2 planning, require a complete public card before a recruitment can enter `published`: active organization, valid non-numeric slug, at least one nonblank qualification, and one canonical non-null `application_end` date. Exact duplicate end dates are valid; missing, null, malformed, or conflicting distinct dates are not. Preserve the immutable first MyResult `published_at` across republishing.
+
+Decision: Prefer a reviewed PostgreSQL `security_invoker` view with an explicit public column list over a broad join in application code. The view must remain subject to existing public-state/review RLS semantics and must not disclose provenance, reviews, memberships, actors, workflow metadata, notes, or non-public URLs.
+
+Reason: Database enforcement prevents page-size underfill and inconsistent eligibility caused by filtering incomplete cards after a bounded list query. A narrow view reduces N+1 reads and public projection drift while retaining the existing public/private boundary.
+
+Status: An offline-only draft migration and static checker now implement this decision for review; neither has been executed, deployed, or connected to a page. The draft intentionally emits ordered raw qualification candidates rather than an SQL display summary so the Phase 2B locale-aware helper remains authoritative.
+
+Limits: A validated base64url cursor carrying `(published_at, id)` is deferred to a separate approved batch. No UI/page cutover, Auth/Admin work, public write endpoint, remote SQL execution, or positive-row HTTP claim follows from this ADR.
+
+Security note: `security_invoker` intentionally preserves underlying RLS and reader grants, so this view is a narrow additional projection rather than an exclusive replacement for existing public table endpoints. Removing/reducing direct table access needs separate approval and design.

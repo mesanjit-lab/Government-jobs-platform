@@ -1,10 +1,12 @@
 # MEMORY.md — Current Handoff State
 
-Last updated: 2026-10-08
+Last updated: 2026-10-09
 
 ---
 
 ## Current Batch
+
+Phase 2C Batch 1 is committed and pushed as `9b7af497`; the follow-up safe TypeScript narrowing fix is committed and pushed as `822c9b59`. The owner reports that Vercel production build and deployment for `822c9b59` completed successfully. This supersedes the earlier Batch 1 local-memory build deferral, but does not authorize a UI cutover or prove database-backed card behavior with real rows. Phase 2C Batch 2A now has an offline-only migration draft at `supabase/migrations/20261009000100_public_recruitment_card_boundary.sql` and static checker at `scripts/check-public-recruitment-card-boundary.mjs`; neither has been executed or deployed. The draft serializes on `recruitments`, refuses deployment if any existing published row is incomplete, validates final published rows after the existing workflow trigger, rejects numeric-only slugs/missing qualifications/missing-null-conflicting application-end dates, permits exact duplicate dates, preserves original `published_at`, and creates a narrow explicit-column security-invoker view. Ordered raw qualification candidates intentionally defer locale-aware deduplication/display to the existing Phase 2B TypeScript helper. Cursor work remains separate. No SQL, RLS, database, UI, route, Auth, or network action occurred.
 
 Public Recruitment Data Layer — deployed chronological ordering checkpoint and anonymous `published_at` verifier update. Starting HEAD: `74fbcc2 feat: add chronological public recruitment ordering`; master was synchronized with origin/master and clean. The owner executed `20261006000100_public_recruitment_listing_order.sql` exactly once on the separate `myresult` project after an empty-table preflight. Structural verification passed; the deployed function is SECURITY INVOKER with an empty search path, and the earlier text matcher was a false negative because PostgreSQL normalizes `SET search_path = ''` as `SET search_path TO ''`. Rollback-only behavioral verification passed 36 assertions and all 17 foundation tables were zero afterward. The anonymous reader manifest now treats `published_at` as an approved recruitment projection and cross-checks it with the server repository's `published_at -> listedAt` mapping. The new zero-row HTTP verification has not run yet. UI remains entirely mock-backed; `/jobs` has not been cut over.
 
