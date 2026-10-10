@@ -207,6 +207,13 @@ The prior eight-file documentation checkpoint (MEMORY.md, NEXT_TASK.md and docs/
 - Existing lightweight offline suite rerun: 177 foundation checks and 36/36 fixture comparisons against HEAD PASSED (exit 0). It uses synthetic configuration/mocked networking, does not load .env.local and performs no database calls or SQL execution. Existing harmless Node module-type warning remains.
 - git diff --check PASSED; assertion-category totals and documentation-only scope checked locally. No TypeScript/production build rerun for this docs-only checkpoint; prior successes remain historical. No remote migration, RLS suite or Auth operation rerun.
 
+## Phase 2C Batch 2B isolated-test harness — prepared, NOT executed
+
+- Checkpoint `88d28db` contains the offline Batch 2A migration draft only; it remains unexecuted in every database.
+- Prepared reviewable, offline-only isolated-database scripts under `supabase/tests/` for a disposable success database, a separately disposable failure database, catalog/grant/security-invoker checks, rollback-only `TEST_B2B_*` fixtures, and a zero-persistent-fixture verification query. Every entry script now requires a separately approved, manually provisioned private isolated-environment sentinel with one exact marker; no script creates or alters it.
+- The failure setup intentionally commits one synthetic incomplete legacy publication so a later migration application can prove transactional preflight rollback. It must run only in a disposable failure database; ordinary success scenarios begin and roll back. A separate offline runner is prepared to require the exact Batch 2A SQLSTATE `P0001` and preflight message, then opens a fresh assertion session only after PostgreSQL has rolled back the failed migration connection. The assertion SQL emits no PASS; only the runner may report PASS after that assertion process exits successfully.
+- The new local static checker reads SQL text only. It does not connect to Supabase/PostgreSQL or execute SQL. Isolated project creation, Auth reviewer creation, SQL execution, migration application, production deployment, cursor work, and UI cutover all remain separately gated.
+
 ## Next Recommended Task
 
 Single proposal in NEXT_TASK.md: static security review of the new authenticated verifier/tests before any session acquisition. No token, sign-in/out/refresh, Auth operation or network execution authorized. Later acquisition/cleanup and controlled execution need separate approvals. Do not rerun anonymous HTTP verification, migration or V2. Concurrency, generated types/DTO/ID mapping and dev-tooling remediation remain separate work; no CMS/writer/fixtures/application auth/public cutover authorized.

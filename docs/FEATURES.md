@@ -60,7 +60,7 @@ Legend:
 [x] Server-first public recruitment read boundary — explicit safe projection, bounded list/lookup mapping and offline tests; pages remain mock-backed
 [x] Phase 2B complete-card domain contracts — pure qualification/deadline/eligibility/slug helpers offline-validated; no schema, route, or UI integration
 [x] Phase 2C Batch 1 public recruitment card data readiness — bounded explicit organization/qualification/application-end side-loads, validated mapping and complete/incomplete/failure outcomes; Vercel production build/deployment verified at `822c9b59`; no filtering, cursor, page or UI integration
-[~] Phase 2C Batch 2A public-card publication/view boundary — offline migration draft and static checker complete; no SQL execution, deployment, UI integration, cursor, or page cutover
+[~] Phase 2C Batch 2A/2B public-card publication/view boundary — offline migration draft/static checker plus unexecuted isolated success/failure test harness prepared; no SQL execution, test project, deployment, UI integration, cursor, or page cutover
 [x] Chronological public-listing contract — deployed once to the dedicated MyResult Supabase project; public `listedAt` mapping and newest-first ordering; pages remain mock-backed
 [ ] Actual authenticated JWT/HTTP execution — NOT RUN; dedicated account/offline signatures do not verify the deployed boundary
 [ ] Positive row visibility / HTTP publication filtering / auth.uid behavior verification — not established by empty reads

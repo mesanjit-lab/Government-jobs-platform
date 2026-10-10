@@ -52,7 +52,7 @@ Last updated: October 2026
 - [x] Server-first public recruitment read boundary — explicit migration projection, bounded deterministic list/lookup mapping and offline tests; no page cutover
 - [x] Phase 2B complete-card contract preparation — pure offline contracts/checker validated; pagination eligibility and cursor design deferred
 - [x] Phase 2C Batch 1 public recruitment card data readiness — explicit bounded side-loads for organization, qualification and canonical application-end data; Vercel production build/deployment verified at `822c9b59`; no page integration, complete-card filtering or cursor design
-- [~] Phase 2C Batch 2A public-card publication/view boundary — offline migration draft/static checks complete; isolated database review, deployment, cursor work and page integration require separate approval
+- [~] Phase 2C Batch 2A/2B public-card publication/view boundary — offline migration/static checks and an unexecuted isolated success/failure test harness are prepared; test-project creation, SQL execution, deployment, cursor work and page integration require separate approval
 - [x] Chronological public-listing contract — deployed once to `myresult`; assigns immutable first MyResult listing time and enables `published_at DESC, id DESC`; UI cutover pending
 - [ ] Integrate one server-rendered recruitment listing using the public repository — requires a separate approved cutover/error-empty-state task
 - [ ] Static security review of authenticated acquisition runner — next proposed gate before controlled normal sign-in

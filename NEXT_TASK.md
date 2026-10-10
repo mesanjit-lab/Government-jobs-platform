@@ -4,7 +4,7 @@ Last updated: 2026-10-09
 
 ## Status
 
-PENDING OWNER REVIEW — Phase 2C Batch 2A has an offline-only draft migration and static checker. Phase 2C Batch 1 is committed as `9b7af497`, and the Vercel TypeScript production-build fix is committed and deployed as `822c9b59`. This document is not authorization to execute SQL, change the deployed database, or cut any page over to Supabase.
+PENDING OWNER REVIEW — Phase 2C Batch 2A has an offline-only draft migration/static checker, and Batch 2B now has offline-only isolated success/failure test scripts and a static checker. Nothing in this document authorizes database connection, SQL execution, test-project creation, Auth account creation, migration deployment, or page cutover. Phase 2C Batch 1 is committed as `9b7af497`, and the Vercel TypeScript production-build fix is committed and deployed as `822c9b59`.
 
 ## Proposed next task: Phase 2C Batch 2 — complete public-card publication boundary
 
@@ -21,6 +21,7 @@ PENDING OWNER REVIEW — Phase 2C Batch 2A has an offline-only draft migration a
 2. Review the draft security-invoker public-card view with explicit public columns only. It preserves the existing public-state/review predicate and `published_at DESC, id DESC` consumer contract, and never exposes reviews, sources, memberships, actors, workflow internals, or private notes/URLs.
 3. Preserve the original `published_at` after withdrawal/republishing. Do not implement a cursor, filtering after `LIMIT`, a page query, UI changes, Auth, Admin, or public writes.
 4. Specify offline/static migration checks plus a controlled isolated-database execution plan before any remote deployment. No remote SQL, Auth, service-role or data mutation is authorized by this planning file.
+5. Batch 2B harness files define two disposable environments: a success database for the committed migration plus rollback-only `TEST_B2B_*` fixtures, and a failure database with one intentionally committed incomplete legacy fixture to prove migration transaction rollback. Every entry script now fails closed unless a separately approved, manually provisioned private sentinel has the exact isolated marker. The failure path has a separate runner that requires the exact migration `P0001`/message before it invokes post-failure assertions. The test harness is not itself execution approval.
 
 ### Definition of done
 
